@@ -10,8 +10,6 @@
 
     <!-- CSS Stylesheet Link -->
     <link rel="stylesheet" href="css/styles.css">
-    <!-- JavaScript Link -->
-    <script src="js/app.js" defer></script>
 
   </head>
 
@@ -72,7 +70,7 @@
           </div>
 
           <!-- Add an assignment button-->
-          <button type="button" class="add-assignment-button">+ Add Assignment</button>
+          <button type="button" class="add-assignment-button" id="addAssignmentButton">+ Add Assignment</button>
         </section>
 
         <!-- Daily Progress -->
@@ -158,7 +156,7 @@
                 </div>
               </div>
 
-              <div class="task-list">
+              <div class="task-list" id="taskList">
                 
                 <!-- Task Item -->
                 <article class="task-list-item">
@@ -322,7 +320,76 @@
       <!-- Main Dashboard END -->
 
     </div>
+
     
+    <!-- Add Assignment Modal -->
+    <div class="modal-overlay" id="assignmentModal">
+      <div class="assignment-modal">
+
+        <div class="modal-header">
+          <div>
+            <p class="small-label">New Assignment</p>
+            <h2>Add Assignment</h2>
+          </div>
+
+          <button class="modal-close" id="closeAssignmentModal" type="button" aria-label="Close">×</button>
+        </div>
+
+        <!-- Assignment Form -->
+        <form id="assignmentForm">
+          <div class="form-group">
+            <label for="assignmentTitle">Assignment name</label>
+
+            <input type="text" id="assignmentTitle" name="assignmentTitle" required>
+          </div>
+
+          <div class="form-group">
+            <label for="assignmentClass">Class</label>
+
+            <input type="text" id="assignmentClass" name="assignmentClass" required>
+          </div>
+
+          <div class="form-group">
+            <label for="assignmentDueDate">Due date</label>
+
+            <input type="date" id="assignmentDueDate" name="assignmentDueDate" required>
+          </div>
+
+          <div class="form-group">
+            <label for="assignmentDescription">Description</label>
+
+            <textarea 
+              id="assignmentDescription" 
+              name="assignmentDescription" 
+              rows="4" 
+              placeholder="Tell Monotask about the assignment...">
+            </textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="assignmentFile">Assignment file</label>
+
+            <input type="file" id="assignmentFile" name="assignmentFile" 
+            accept=".pdf, .doc, .docx, .txt, .jpg, .jpeg, .png, .svg,  
+            .rtf, .odt, .odf, .pages, .xls, .xlsx, .ppt, .pptx, .ods, 
+            .odp, .key, .html, .zip, .rar">
+
+            <p class="input-help">Optional. You can upload instructions, screenshots, PDFs, or other assignment files.</p>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="secondary-button" id="cancelAssignment">Cancel</button>
+            <button type="submit" class="primary-button">Add to my list</button>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+    
+
+    <!-- JavaScript Link -->
+    <script src="js/app.js"></script>
+
   </body>
   
 </html>
