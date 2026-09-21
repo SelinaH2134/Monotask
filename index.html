@@ -2,12 +2,320 @@
 <html>
   
   <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyQueue</title>
+
+    <title>Monotask</title>
+
+    <!-- CSS Stylesheet Link -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- JavaScript Link -->
+    <script src="js/app.js" defer></script>
+
   </head>
 
   <body>
+
+    <div class="app-layout">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+
+        <div class="sidebar-top">
+          <!-- Website's Name -->
+          <a href="index.html" class="brand">Monotask</a>
+
+          <!-- Navigation -->
+          <nav class="sidebar-nav">
+            <a href="#" class="nav-link active">Today</a>
+            <a href="#" class="nav-link">Assignments</a>
+            <a href="#" class="nav-link">My Plan</a>
+          </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+          <!-- Assignment Finished Streak-->
+          <!-- If the assignment passes the deadline -> lose streak -->
+          <section class="streak-card">
+            <p class="small-label">Current streak</p>
+            <h3>4 Days</h3>
+            <p>Keep it going!</p>
+          </section>
+
+          <!-- User Profile -->
+          <div class="user-profile">
+            <div>
+              <p class="user-name">Student</p>
+              <p class="user-role">College Student</p>
+            </div>
+
+            <button type="button" class="profile-menu-button">...</button>
+          </div>
+        </div>
+
+      </aside>
+      <!-- Sidebar END -->
+
+      <!-- Main Dashboard -->
+      <main class="dashboard">
+
+        <!-- Top Section -->
+        <section class="dashboard-header">
+          <div>
+            <p class="small-label">Monday, September 22</p>
+
+            <h1 id="greeting">Good morning!</h1> <!-- Morning, Afternoon, Evening changing depend on the user's time -->
+
+            <p class="subtitle">Make progress on <strong>one thing</strong> at a time today</p>
+          </div>
+
+          <!-- Add an assignment button-->
+          <button type="button" class="add-assignment-button">+ Add Assignment</button>
+        </section>
+
+        <!-- Daily Progress -->
+        <section class="daily-progress">
+          <div class="progress-summary">
+            <div>
+              <!-- Assignment left out of total assignments -->
+              <p><strong>1 of 5 things done</strong></p>
+              <p class="muted-text">Small steps add up.</p>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="progress-bar-container">
+            <progress value="20" max="100">20%</progress>
+            <span>20%</span>
+          </div>
+        </section>
+
+        <!-- Dashboard Grid -->
+        <section class="dashboard-grid">
+
+          <!-- Left Column -->
+          <div class="main-column">
+
+            <!-- Recommended Task -->
+            <section class="next-task-section">
+              <div class="section-heading">
+                <div>
+                  <p class="small-label">Your one thing</p>
+                  <h2>Do this next</h2>
+                </div>
+
+                <span class="smart-recommendation">Smart Recommendation</span>
+              </div>
+
+              <!-- Main Task -->
+              <article class="next-task-card">
+                
+                <div class="task-card-top">
+                  <p class="course-label">CS 2640 · Computer Organization</p>
+                  <p class="due-date">Due Sep 24</p>
+                </div>
+
+                <h3>Finish programming assignment</h3>
+                <p class="task-description">Complete the required problems and prepare the assignment for submission.</p>
+
+                <div class="task-meta">
+                  <span><strong>45 min</strong> focus time</span>
+                  <span><strong>2 sessions left</strong></span>
+                </div>
+
+                <!-- AI / Priority Explanation -->
+                <div class="why-task">
+                  <div>
+                    <h4>Why this one?</h4>
+                    <p>
+                      This assignment is due soon, still needs multiple
+                      study sessions, and has a higher priority than your
+                      other upcoming work.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="task-actions">
+                  <!-- Focus Screen -->
+                  <button type="button" class="primary-button">Start a focus session</button>
+                  <!-- Skip this task for now to go to the next task -->
+                  <button type="button" class="secondary-button">Not now</button>
+                </div>
+              </article>
+            </section>
+
+            <!-- Task List -->
+            <section class="task-list-section">
+              <div class="section-heading">
+                <div>
+                  <p class="small-label">Coming up</p>
+                  <h2>Your task list</h2>
+                </div>
+              </div>
+
+              <div class="task-list">
+                
+                <!-- Task Item -->
+                <article class="task-list-item">
+                  <input type="checkbox">
+                  <div class="task-list-info">
+                    <h3>Finish programming assignment</h3>
+                    <p>CS 2640 · 45 min focus block</p>
+                  </div>
+
+                  <div class="task-list-due">
+                    <p>Due Sep 24</p>
+                    <span class="priority high-priority">High priority</span>
+                  </div>
+                </article>
+
+                <!-- Task Item -->
+                <article class="task-list-item">
+                  <input type="checkbox">
+                  <div class="task-list-info">
+                    <h3>Review integration techniques</h3>
+                    <p>Calculus · 30 min focus block</p>
+                  </div>
+
+                  <div class="task-list-due">
+                    <p>Due Sep 26</p>
+                    <span class="priority medium-priority">Medium priority</span>
+                  </div>
+                </article>
+
+                <!-- Task Item -->
+                <article class="task-list-item">
+                  <input type="checkbox">
+                  <div class="task-list-info">
+                    <h3>Start research paper outline</h3>
+                    <p>English · 30 min focus block</p>
+                  </div>
+
+                  <div class="task-list-due">
+                    <p>Due Sep 29</p>
+                    <span class="priority medium-priority">Medium priority</span>
+                  </div>
+                </article>
+
+                <!-- Task Item -->
+                <article class="task-list-item" completed>
+                  <input type="checkbox" checked>
+                  <div class="task-list-info">
+                    <h3>Read chapter 8</h3>
+                    <p>Psychology · 25 min focus block</p>
+                  </div>
+
+                  <div class="task-list-due">
+                    <p>Due Sep 25</p>
+                    <span class="priority low-priority">low priority</span>
+                  </div>
+                </article>
+
+              </div>
+            </section>
+          </div>
+
+          <!-- Right Column -->
+          <aside class="right-column">
+            <!-- Weekly Plan -->
+            <section class="weekly-plan-card">
+              <div class="section-heading">
+                <div>
+                  <p class="small-label">This week</p>
+                  <h2>A gentle plan</h2>
+                </div>
+
+                <button type="button" class="more-button">...</button>
+              </div>
+
+              <div class="weekly-plan-summary">
+                <div class="weekly-progress">4/7</div>
+
+                <div>
+                  <p><strong>4 sessions planned</strong></p>
+                  <p class="muted-text">for a calmer week</p>
+                </div>
+              </div>
+
+              <div class="plan-list">
+
+                <!-- Plan Task-->
+                <div class="plan-item">
+                  <div class="plan-day">
+                    <span>Mon</span>
+                    <strong>22</strong>
+                  </div>
+
+                  <div class="plan-info">
+                    <h3>Programming assignment</h3>
+                    <p>45 min focus block</p>
+                  </div>
+
+                  <span class="plan-status">Done</span>
+                </div>
+
+                <!-- Plan Task-->
+                <div class="plan-item">
+                  <div class="plan-day">
+                    <span>Tue</span>
+                    <strong>23</strong>
+                  </div>
+
+                  <div class="plan-info">
+                    <h3>Calculus practice</h3>
+                    <p>30 min focus block</p>
+                  </div>
+
+                  <span class="plan-status">30 min</span>
+                </div>
+
+                <!-- Plan Task-->
+                <div class="plan-item">
+                  <div class="plan-day">
+                    <span>Wed</span>
+                    <strong>24</strong>
+                  </div>
+
+                  <div class="plan-info">
+                    <h3>Programming assignment</h3>
+                    <p>45 min focus block</p>
+                  </div>
+
+                  <span class="plan-status">45 min</span>
+                </div>
+
+              </div>
+
+              <!-- View a Full Assignment Study Plan-->
+              <a href="#" class="view-plan-link">View full plan →</a>
+            </section>
+
+            <!-- Perspective Card -->
+            <section class="perspective-card">
+              <h3>A little perspective</h3>
+              <p>
+                Progress isn't about doing everything.
+                It's about choosing the next right thing.
+              </p>
+            </section>
+          </aside>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+          <p>&copy; 2026 Monotask</p>
+
+          <div class="footer-links">
+              <a href="#">About</a>
+              <a href="#">Privacy</a>
+              <a href="#">Help</a>
+          </div>
+        </footer>
+      </main>
+      <!-- Main Dashboard END -->
+
+    </div>
     
   </body>
   
