@@ -26,9 +26,12 @@ const savedAssignments =
 if (savedAssignments) {
 
     assignments = JSON.parse(savedAssignments);
+
     assignments.forEach(function (assignment) {
 
-        addAssignmentToList(assignment);
+        if (!isPastDue(assignment.dueDate)) {
+            addAssignmentToList(assignment);
+        }
 
     });
 
@@ -57,7 +60,7 @@ assignmentForm.addEventListener("submit", function(event) {
     // Stop the page from refreshing
     event.preventDefault();
 
-    /* Get information from the form */
+    // Get information from the form
     const title =
         document.getElementById("assignmentTitle").value.trim();
 
@@ -71,7 +74,7 @@ assignmentForm.addEventListener("submit", function(event) {
         document.getElementById("assignmentDescription").value.trim();
 
 
-    /* Create an assignment object */
+    // Create an assignment object
     const assignment = {
 
         id: Date.now(),
@@ -90,18 +93,18 @@ assignmentForm.addEventListener("submit", function(event) {
 
     console.log("New assignment:", assignment);
 
-    /* Display assignment */
+    // Display assignment 
     addAssignmentToList(assignment);
 
-    /* Clear the form */
+    // Clear the form 
     assignmentForm.reset();
 
-    /* Close modal */
+    // Close modal
     assignmentModal.classList.remove("active");
 
 });
 
-// Display Assignment
+/* Display Assignment Function */
 function addAssignmentToList(assignment) {
 
     const taskItem =
@@ -111,7 +114,7 @@ function addAssignmentToList(assignment) {
 
     taskItem.innerHTML = `
 
-        <input type="checkbox" aria-label="Mark assignment complete">
+        <input type="checkbox" class="task-checkbox" aria-label="Mark assignment complete" ${assignment.completed ? "checked" : ""}>
 
         <div class="task-list-info">
             <h3>${assignment.title}</h3>
@@ -129,9 +132,28 @@ function addAssignmentToList(assignment) {
 
     taskList.appendChild(taskItem);
 
+    if (assignment.completed) {
+        taskItem.classList.add("completed");
+    }
+
+    const checkbox = taskItem.querySelector(".task-checkbox");
+
+    checkbox.addEventListener("change", function () {
+
+        assignment.completed = checkbox.checked;
+
+        taskItem.classList.toggle(
+            "completed",
+            assignment.completed
+        )
+
+        saveAssignments();
+
+    });
+
 }
 
-// Format Date
+/* Format Date Function */
 function formatDueDate(dateString) {
 
     if (!dateString) {
@@ -151,9 +173,22 @@ function formatDueDate(dateString) {
 
 }
 
-// Save Assignments
+/* Save Assignments Function */
 function saveAssignments() {
 
     localStorage.setItem("monotaskAssignments", JSON.stringify(assignments));
 
+}
+
+/* Does Due Date Pass? Function */
+function isPastDue(dateString) {
+
+    if (!dateString) {
+        return false;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dueDate = new Date(dateString + "T00:00:00");
+    return dueDate < today;
 }

@@ -572,6 +572,15 @@ a {
     text-decoration: line-through;
 }
 
+.task-list-item.completed .task-list-info h3 {
+    text-decoration: line-through;
+    opacity: 0.55;
+}
+
+.task-list-item.completed .task-list-info p, .task-list-item.completed .task-list-due {
+    opacity: 0.55;
+}
+
 
 /* Weekly Plan */
 .weekly-plan-card {
