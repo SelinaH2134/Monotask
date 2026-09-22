@@ -34,11 +34,15 @@
 
         <div class="sidebar-bottom">
           <!-- Assignment Finished Streak-->
-          <!-- If the assignment passes the deadline -> lose streak -->
+          <!--
+          Consecutive days where the user 
+          successfully completed at least one assignment, 
+          with no assignment becoming overdue during that period.
+          -->
           <section class="streak-card">
             <p class="small-label">Current streak</p>
-            <h3>4 Days</h3>
-            <p>Keep it going!</p>
+            <h3 id="currentStreak">0 Days</h3>
+            <p id="streakMessage">Keep it going!</p>
           </section>
 
           <!-- User Profile -->
@@ -78,15 +82,15 @@
           <div class="progress-summary">
             <div>
               <!-- Assignment left out of total assignments -->
-              <p><strong>1 of 5 things done</strong></p>
+              <p><strong id="dailyProgressText">0 of 0 things done</strong></p>
               <p class="muted-text">Small steps add up.</p>
             </div>
           </div>
 
           <!-- Progress Bar -->
           <div class="progress-bar-container">
-            <progress value="20" max="100">20%</progress>
-            <span>20%</span>
+            <progress value="0" max="100" id="dailyProgressBar">0%</progress>
+            <span id="dailyProgressPercent">0%</span>
           </div>
         </section>
 
@@ -113,36 +117,26 @@
               <article class="next-task-card">
                 
                 <div class="task-card-top">
-                  <p class="course-label">CS 2640 · Computer Organization</p>
-                  <p class="due-date">Due Sep 24</p>
+                  <p class="course-label" id="nextTaskCourse">No course</p>
+                  <p class="due-date" id="nextTaskDue">No due date</p>
                 </div>
 
-                <h3>Finish programming assignment</h3>
+                <h3 id="nextTaskTitle">No task selected</h3>
                 <p class="task-description">Complete the required problems and prepare the assignment for submission.</p>
-
-                <div class="task-meta">
-                  <span><strong>45 min</strong> focus time</span>
-                  <span><strong>2 sessions left</strong></span>
-                </div>
-
 
                 <!-- AI / Priority Explanation -->
                 <div class="why-task">
                   <div>
                     <h4>Why this one?</h4>
-                    <p>
-                      This assignment is due soon, still needs multiple
-                      study sessions, and has a higher priority than your
-                      other upcoming work.
-                    </p>
+                    <p id="whyTaskText">This assignment is due soon and has a high priority.</p>
                   </div>
                 </div>
 
                 <div class="task-actions">
                   <!-- Focus Screen -->
-                  <button type="button" class="primary-button">Start a focus session →</button>
+                  <button type="button" class="primary-button" id="finishNextTask">Finish assignment</button>
                   <!-- Skip this task for now to go to the next task -->
-                  <button type="button" class="secondary-button">Not now</button>
+                  <button type="button" class="secondary-button" id="skipNextTask">Not now</button>
                 </div>
               </article>
             </section>
@@ -152,69 +146,11 @@
               <div class="section-heading">
                 <div>
                   <p class="small-label">Coming up</p>
-                  <h2>Your task list</h2>
+                  <h2>Your assignment list</h2>
                 </div>
               </div>
 
-              <div class="task-list" id="taskList">
-                
-                <!-- Task Item -->
-                <article class="task-list-item">
-                  <input type="checkbox">
-                  <div class="task-list-info">
-                    <h3>Finish programming assignment</h3>
-                    <p>CS 2640 · 45 min focus block</p>
-                  </div>
-
-                  <div class="task-list-due">
-                    <p>Due Sep 24</p>
-                    <span class="priority high-priority">High priority</span>
-                  </div>
-                </article>
-
-                <!-- Task Item -->
-                <article class="task-list-item">
-                  <input type="checkbox">
-                  <div class="task-list-info">
-                    <h3>Review integration techniques</h3>
-                    <p>Calculus · 30 min focus block</p>
-                  </div>
-
-                  <div class="task-list-due">
-                    <p>Due Sep 26</p>
-                    <span class="priority medium-priority">Medium priority</span>
-                  </div>
-                </article>
-
-                <!-- Task Item -->
-                <article class="task-list-item">
-                  <input type="checkbox">
-                  <div class="task-list-info">
-                    <h3>Start research paper outline</h3>
-                    <p>English · 30 min focus block</p>
-                  </div>
-
-                  <div class="task-list-due">
-                    <p>Due Sep 29</p>
-                    <span class="priority medium-priority">Medium priority</span>
-                  </div>
-                </article>
-
-                <!-- Task Item -->
-                <article class="task-list-item" completed>
-                  <input type="checkbox" checked>
-                  <div class="task-list-info">
-                    <h3>Read chapter 8</h3>
-                    <p>Psychology · 25 min focus block</p>
-                  </div>
-
-                  <div class="task-list-due">
-                    <p>Due Sep 25</p>
-                    <span class="priority low-priority">Low priority</span>
-                  </div>
-                </article>
-
-              </div>
+              <div class="task-list" id="taskList"></div>
             </section>
           </div>
 
@@ -233,62 +169,15 @@
               </div>
 
               <div class="weekly-plan-summary">
-                <div class="weekly-progress">4/7</div>
+                <div class="weekly-progress" id="weeklyProgress">0/0</div>
 
                 <div>
-                  <p><strong>4 sessions planned</strong></p>
+                  <p><strong id="sessionsPlanned">0 planned</strong></p>
                   <p class="muted-text">for a calmer week</p>
                 </div>
               </div>
 
-              <div class="plan-list">
-
-                <!-- Plan Task-->
-                <div class="plan-item">
-                  <div class="plan-day">
-                    <span>Mon</span>
-                    <strong>22</strong>
-                  </div>
-
-                  <div class="plan-info">
-                    <h3>Programming assignment</h3>
-                    <p>45 min focus block</p>
-                  </div>
-
-                  <span class="plan-status">Done</span>
-                </div>
-
-                <!-- Plan Task-->
-                <div class="plan-item">
-                  <div class="plan-day">
-                    <span>Tue</span>
-                    <strong>23</strong>
-                  </div>
-
-                  <div class="plan-info">
-                    <h3>Calculus practice</h3>
-                    <p>30 min focus block</p>
-                  </div>
-
-                  <span class="plan-status">30 min</span>
-                </div>
-
-                <!-- Plan Task-->
-                <div class="plan-item">
-                  <div class="plan-day">
-                    <span>Wed</span>
-                    <strong>24</strong>
-                  </div>
-
-                  <div class="plan-info">
-                    <h3>Programming assignment</h3>
-                    <p>45 min focus block</p>
-                  </div>
-
-                  <span class="plan-status">45 min</span>
-                </div>
-
-              </div>
+              <div class="plan-list" id="planList"></div>
 
               <!-- View a Full Assignment Study Plan-->
               <a href="#" class="view-plan-link">View full plan →</a>
