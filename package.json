@@ -1,0 +1,24 @@
+{
+  "name": "monotask",
+  "version": "1.0.0",
+  "description": "A web app that helps students turn a messy list of assignments into an actionable study plan. It doesn't just display assignments; instead, it helps the student decide what to work on next.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SelinaH2134/Monotask.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SelinaH2134/Monotask/issues"
+  },
+  "homepage": "https://github.com/SelinaH2134/Monotask#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

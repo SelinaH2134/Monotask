@@ -126,7 +126,7 @@ cancelAssignment.addEventListener("click", function() {
 });
 
 // Add to the List
-assignmentForm.addEventListener("submit", function(event) {
+assignmentForm.addEventListener("submit", async  function(event) {
 
     // Stop the page from refreshing
     event.preventDefault();
@@ -149,11 +149,39 @@ assignmentForm.addEventListener("submit", function(event) {
         course: course,
         dueDate: dueDate,
         description: description,
+
         completed: false,
         completedAt: null,
-        priority: calculatePriority(dueDate)
+
+        // AI recommendation data
+        priority: "Analyzing...",
+        aiReason: "",
+        recommendation: "",
+        estimatedMinutes: null
 
     };
+
+    try {
+        const response = await fetch("http://localhost:3000/api/analyze-assignment", {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(assignment)
+        });
+
+        const aiResult = await response.json();
+
+        assignment.priority = aiResult.priority;
+        assignment.aiReason = aiResult.reason;
+        assignment.recommendation = aiResult.recommendation;
+        assignment.estimatedMinutes = aiResult.estimatedMinutes;
+
+    } catch (error) {
+        console.error("AI analysis failed:", error);
+    }
 
     // Add assignment to array
     assignments.push(assignment);
@@ -562,16 +590,12 @@ function updateNextTask() {
         (dueDate - today) / (1000 * 60 * 60 * 24)
     );
 
-    if (daysUntilDue === 0) {
-        whyTaskText.textContent = "This assignment is due today, so it's part of today's work.";
-    } 
-    
-    else if (daysUntilDue === 1) {
-        whyTaskText.textContent = "This assignment is due tomorrow and is next after today's work.";
+    if (nextTask.aiReason) {
+        whyTaskText.textContent = nextTask.aiReason;
     } 
     
     else {
-        whyTaskText.textContent = `This assignment is due in ${daysUntilDue} days.`;
+        whyTaskText.textContent = "Analyzing this assignment...";
     }
 }
 
