@@ -106,6 +106,7 @@ updateNextTask();
 updateDailyProgress();
 updateGreeting();
 updateStreak();
+updateCurrentDate();
 
 // Open Modal
 addAssignmentButton.addEventListener("click", function() {
@@ -722,6 +723,19 @@ function getTodayDateString() {
     const day = String(today.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
+}
+
+/* Update the User's Current Date Function */
+function updateCurrentDate() {
+    const currentDate = document.getElementById("currentDate");
+
+    const today = new Date();
+
+    currentDate.textContent = today.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+    });
 }
 
 //localStorage.clear();
