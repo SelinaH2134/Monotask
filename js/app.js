@@ -695,27 +695,29 @@ function updateStreak() {
     while (currentDate <= today) {
         const dateString = getDateString(currentDate);
 
-        // Find assignments that were due on this day
+        // Find assignments that were due on this day.
+        // Past-due assignments are still kept in the assignments array,
+        // so they can be used for streak history.
         const daysAssignments = assignments.filter(function (assignment) {
             return assignment.dueDate === dateString;
         });
 
-        // If there were no assignments on this day, the day counts as successful
+        // If there were no assignments on this day,
+        // the day counts as successful once the streak has started.
         if (daysAssignments.length === 0) {
             streak++;
             currentDate.setDate(currentDate.getDate() + 1);
             continue;
         }
 
-        // Check whether every assignment due that day was completed on that same day
+        // Every assignment due that day must have been completed
+        // on or before its due date.
         const dayWasSuccessful = daysAssignments.every(function (assignment) {
 
-            // The assignment is currently incomplete
             if (!assignment.completed) {
                 return false;
             }
 
-            // No completion date means we cannot count it
             if (!assignment.completedAt) {
                 return false;
             }
@@ -723,7 +725,6 @@ function updateStreak() {
             const completedDate = new Date(assignment.completedAt);
             completedDate.setHours(0, 0, 0, 0);
 
-            // The assignment must have been completed on or before its due date.
             const dueDate = new Date(
                 assignment.dueDate + "T00:00:00"
             );
@@ -736,31 +737,23 @@ function updateStreak() {
         } 
         
         else {
-            // This day failed, so the current streak ends here
+            // This day failed, so the streak ends here.
             streak = 0;
         }
 
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    currentStreakElement.textContent = `${streak} ${streak === 1 ? "Day" : "Days"}`;
+    currentStreakElement.textContent =
+        `${streak} ${streak === 1 ? "Day" : "Days"}`;
 
     if (streak === 0) {
         streakMessageElement.textContent = "You missed an assignment :(";
     } 
-
+    
     else {
         streakMessageElement.textContent = "Keep it going!";
     }
-}
-
-// Get Date Function */
-function getDateString(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
 }
 
 /* Get Today Date Function */
