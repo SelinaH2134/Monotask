@@ -116,7 +116,8 @@ if (savedStreakStartDate) {
 updateGentlePlan();
 updateNextTask();
 updateDailyProgress();
-updateGreeting();
+// 60,000 milliseconds = 1 minute. Check the time every minute
+updateGreeting(); setInterval(updateGreeting, 60000);
 updateStreak();
 updateCurrentDate();
 
@@ -670,7 +671,6 @@ function updateDailyProgress() {
 /* Greeting the user base on the user's time Function */
 function updateGreeting() {
     const greeting = document.getElementById("greeting");
-
     const currentHour = new Date().getHours();
 
     if (currentHour < 12) {
