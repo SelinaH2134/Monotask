@@ -40,6 +40,14 @@ const nextTaskDue = document.getElementById("nextTaskDue");
 
 const whyTaskText = document.getElementById("whyTaskText");
 
+const nextTaskDescription = document.getElementById("nextTaskDescription");
+
+const descriptionModal = document.getElementById("descriptionModal");
+
+const closeDescriptionModal = document.getElementById("closeDescriptionModal");
+
+const fullDescription = document.getElementById("fullDescription");
+
 // Finish assignment
 finishNextTask.addEventListener("click", function () {
     const nextTask = nextTaskQueue[0];
@@ -202,6 +210,21 @@ assignmentForm.addEventListener("submit", async  function(event) {
     // Close modal
     assignmentModal.classList.remove("active");
 
+});
+
+// Open Full Description Modal
+nextTaskDescription.addEventListener("click", function () {
+    if (!nextTaskDescription.dataset.truncated) {
+        return;
+    }
+
+    fullDescription.textContent = nextTaskDescription.dataset.fullDescription || "";
+    descriptionModal.classList.add("active");
+});
+
+// Close Full Description Modal
+closeDescriptionModal.addEventListener("click", function () {
+    descriptionModal.classList.remove("active");
 });
 
 /* Display Assignment Function */
@@ -456,7 +479,7 @@ function updateGentlePlan() {
         
         else if (dueDate.getTime() === tomorrow.getTime()) {
 
-            day = "TOMOR";
+            day = "TMR";
             date = dueDate.getDate();
 
         } 
@@ -480,8 +503,6 @@ function updateGentlePlan() {
                 <h3>${assignment.title}</h3>
                 <p>${assignment.priority}</p>
             </div>
-
-            <span class="plan-status">Planned</span>
         `;
 
         planList.appendChild(planItem);
@@ -574,10 +595,14 @@ function updateNextTask() {
     skipNextTask.disabled = nextTaskQueue.length <= 1;
 
     nextTaskTitle.textContent = nextTask.title;
-
     nextTaskCourse.textContent = nextTask.course || "No class";
-
     nextTaskDue.textContent = `Due ${formatDueDate(nextTask.dueDate)}`;
+
+    const description = getShortDescription(nextTask.description);
+
+    nextTaskDescription.textContent = description.text;
+    nextTaskDescription.dataset.truncated = description.truncated;
+    nextTaskDescription.dataset.fullDescription = nextTask.description || "";
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -653,7 +678,7 @@ function updateStreak() {
 
     // If the user has never completed an assignment, the streak has not started
     if (!streakStartDate) {
-        currentStreakElement.textContent = "0 Days";
+        currentStreakElement.textContent = "0 Day";
         streakMessageElement.textContent = "Start your streak!";
         return;
     }
@@ -760,6 +785,31 @@ function updateCurrentDate() {
         month: "long",
         day: "numeric"
     });
+}
+
+/* Get a Short Description */
+function getShortDescription(description) {
+    if (!description) {
+        return {
+            text: "No description provided.",
+            truncated: false
+        };
+    }
+
+    const sentences = description.match(/[^.!?]+[.!?]+/g) || [description];
+
+    let shortDescription = sentences.slice(0, 2).join(" ").trim();
+
+    if (shortDescription.length > 180) {
+        shortDescription = shortDescription.slice(0, 180).trim() + "...";
+    }
+
+    const truncated = shortDescription !== description.trim();
+
+    return {
+        text: shortDescription,
+        truncated: truncated
+    };
 }
 
 //localStorage.clear();

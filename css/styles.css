@@ -393,10 +393,30 @@ a {
     font-size: 1.4rem;
 }
 
+/* Description */
 .task-description {
     color: var(--muted);
     font-size: 0.82rem;
     margin-bottom: 12px;
+}
+
+.task-description[data-truncated="true"] {
+    cursor: pointer;
+}
+
+.task-description[data-truncated="true"]:hover {
+    text-decoration: underline;
+}
+
+.description-modal-content {
+    max-height: 400px;
+    overflow-y: auto;
+    line-height: 1.7;
+}
+
+.description-modal-content p {
+    margin: 0;
+    white-space: pre-wrap;
 }
 
 /* Why This Task? */

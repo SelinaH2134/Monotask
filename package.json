@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/SelinaH2134/Monotask#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.3",
+    "express": "^5.2.1",
+    "openai": "^7.22.0"
   }
 }
