@@ -268,7 +268,11 @@
 
           <div class="modal-actions">
             <button type="button" class="secondary-button" id="cancelAssignment">Cancel</button>
-            <button type="submit" class="primary-button">Add to my list</button>
+            <button type="submit" class="primary-button" id="addAssignmentSubmit">Add to my list</button>
+            
+            <p id="aiAnalyzingMessage" class="ai-analyzing-message" hidden>
+              AI analyzing assignment...
+            </p>
           </div>
         </form>
         
@@ -277,27 +281,22 @@
 
     <!-- Full Assignment Description Modal -->
     <div class="modal-overlay" id="descriptionModal">
-        <div class="assignment-modal">
-            <div class="modal-header">
-                <div>
-                    <p class="small-label">Assignment</p>
-                    <h2>Full Description</h2>
-                </div>
-
-                <button
-                    class="modal-close"
-                    id="closeDescriptionModal"
-                    type="button"
-                    aria-label="Close"
-                >
-                    ×
-                </button>
+      <div class="assignment-modal">
+          <div class="modal-header">
+            <div>
+                <p class="small-label">Assignment</p>
+                <h2>Full Description</h2>
             </div>
 
-            <div class="description-modal-content">
-                <p id="fullDescription"></p>
-            </div>
-        </div>
+            <button class="modal-close" id="closeDescriptionModal" type="button" aria-label="Close">
+              ×
+            </button>
+          </div>
+
+          <div class="description-modal-content">
+              <p id="fullDescription"></p>
+          </div>
+      </div>
     </div>
     
 

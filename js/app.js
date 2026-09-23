@@ -48,6 +48,10 @@ const closeDescriptionModal = document.getElementById("closeDescriptionModal");
 
 const fullDescription = document.getElementById("fullDescription");
 
+const addAssignmentSubmit = document.getElementById("addAssignmentSubmit");
+
+const aiAnalyzingMessage = document.getElementById("aiAnalyzingMessage");
+
 // Finish assignment
 finishNextTask.addEventListener("click", function () {
     const nextTask = nextTaskQueue[0];
@@ -139,6 +143,10 @@ assignmentForm.addEventListener("submit", async  function(event) {
     // Stop the page from refreshing
     event.preventDefault();
 
+    addAssignmentSubmit.hidden = true;
+    cancelAssignment.hidden = true;
+    aiAnalyzingMessage.hidden = false;
+
     // Get information from the form
     const title = document.getElementById("assignmentTitle").value.trim();
 
@@ -212,7 +220,12 @@ assignmentForm.addEventListener("submit", async  function(event) {
     // Clear the form 
     assignmentForm.reset();
 
+    addAssignmentSubmit.hidden = false;
+    cancelAssignment.hidden = false;
+    aiAnalyzingMessage.hidden = true;
+
     // Close modal
+    assignmentForm.reset();
     assignmentModal.classList.remove("active");
 
 });

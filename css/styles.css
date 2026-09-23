@@ -480,6 +480,14 @@ a {
     cursor: not-allowed;
 }
 
+/* AI Analyzing Message */
+.ai-analyzing-message {
+    margin: 10px 0 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-align: center;
+}
+
 
 /* Task List */
 .task-list-section {
