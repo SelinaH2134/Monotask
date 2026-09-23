@@ -55,32 +55,30 @@ app.post("/api/analyze-assignment", async function (req, res) {
 
                     PRIORITY RULES:
 
-                    1. If the assignment is due TODAY:
-                    - Priority MUST be "High priority".
-                    - Explain that it is due today.
-                    - Recommend starting or finishing it now.
+                    You MUST follow these priority rules exactly.
 
-                    2. If the assignment is due TOMORROW:
-                    - Priority MUST be "High priority".
-                    - Explain that it is due tomorrow and should be started now.
+                    - daysUntilDue <= 0:
+                    Priority MUST be "High priority".
 
-                    3. If the assignment is due in 2–3 days:
-                    - Usually use "Medium priority".
-                    - Use "High priority" if the workload appears large or difficult.
+                    - daysUntilDue === 1:
+                    Priority MUST be "High priority".
 
-                    4. If the assignment is due in 4–7 days:
-                    - Usually use "Medium priority".
+                    - daysUntilDue >= 2 AND daysUntilDue <= 3:
+                    Priority MUST be "Medium priority", unless the assignment clearly has a very large workload or unusually difficult requirements. In that case, use "High priority".
 
-                    5. If the assignment is due more than 7 days away:
-                    - Usually use "Low priority", unless the assignment appears unusually large or difficult.
+                    - daysUntilDue >= 4 AND daysUntilDue <= 7:
+                    Priority MUST be "Medium priority".
+
+                    - daysUntilDue > 7:
+                    Priority MUST be "Low priority", unless the assignment clearly has a very large workload or unusually difficult requirements. In that case, use "Medium priority".
 
                     IMPORTANT:
-                    - Never say an assignment is "far enough away" when it is due today or tomorrow.
-                    - Never say an assignment has "substantial time" when it is due today or tomorrow.
-                    - The reason MUST agree with the due date and priority.
-                    - Do not contradict the provided number of days until due.
-                    - The student's immediate deadline is more important than the course name.
-                    - Do not invent assignment requirements that were not provided.
+                    - The value of daysUntilDue is authoritative.
+                    - Do not ignore or reinterpret daysUntilDue.
+                    - Do not choose Medium priority for an assignment due today or tomorrow.
+                    - Do not choose Low priority for an assignment due today or tomorrow.
+                    - The priority must agree with the due date.
+                    - The student's deadline is more important than the course name.
 
                     RECOMMENDATION RULES:
 

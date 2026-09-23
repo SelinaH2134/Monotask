@@ -189,6 +189,11 @@ assignmentForm.addEventListener("submit", async  function(event) {
 
     } catch (error) {
         console.error("AI analysis failed:", error);
+
+        assignment.priority = "AI unavailable";
+        assignment.aiReason = "AI analysis could not be completed.";
+        assignment.recommendation = "You can still work on this assignment manually.";
+        assignment.estimatedMinutes = null;
     }
 
     // Add assignment to array
@@ -434,7 +439,7 @@ function updateGentlePlan() {
     planList.innerHTML = "";
 
     const weeklyAssignments = assignments.filter(function (assignment) {
-        return !isPastDue(assignment.dueDate) && isThisWeek(assignment.dueDate);
+        return isThisWeek(assignment.dueDate);
     });
 
     if (weeklyAssignments.length === 0) {
@@ -754,6 +759,15 @@ function updateStreak() {
     else {
         streakMessageElement.textContent = "Keep it going!";
     }
+}
+
+/* Get Date String Function */
+function getDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
 }
 
 /* Get Today Date Function */
