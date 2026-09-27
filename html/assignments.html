@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Assignments | Monotask</title>
+
+        <!-- CSS Stylesheet Link -->
+        <link rel="stylesheet" href="../css/styles.css">
+    </head>
+
+    <body>
+
+        <div class="app-layout">
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+
+                <div class="sidebar-top">
+
+                    <!-- Website's Name -->
+                    <a href="index.html" class="brand">Monotask</a>
+
+                    <!-- Navigation -->
+                    <nav class="sidebar-nav">
+                        <a href="index.html" class="nav-link">Today</a>
+                        <a href="assignments.html" class="nav-link active">Assignments</a>
+                        <a href="plan.html" class="nav-link">My Plan</a>
+                    </nav>
+
+                </div>
+
+
+                <div class="sidebar-bottom">
+
+                    <!-- Assignment Finished Streak -->
+                    <section class="streak-card">
+
+                        <p class="small-label">Current streak</p>
+
+                        <h3 id="currentStreak">0 Days</h3>
+
+                        <p id="streakMessage">Keep it going!</p>
+
+                    </section>
+
+
+                    <!-- User Profile -->
+                    <div class="user-profile">
+
+                        <div>
+                            <p class="user-name">Student</p>
+                            <p class="user-role">College Student</p>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="profile-menu-button">
+                            ...
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </aside>
+            <!-- Sidebar END -->
+
+
+            <!-- Main Content -->
+            <main class="dashboard">
+
+                <!-- Page Header -->
+                <section class="dashboard-header">
+
+                    <div>
+
+                        <p class="small-label">Your work</p>
+
+                        <h1>Assignments</h1>
+
+                        <p class="subtitle">
+                            Keep track of everything you need to get done.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Add Assignment -->
+                    <button
+                        type="button"
+                        class="add-assignment-button"
+                        id="addAssignmentButton">
+
+                        + Add Assignment
+
+                    </button>
+
+                </section>
+
+
+                <!-- Assignment Summary -->
+                <section class="daily-progress">
+
+                    <div class="progress-summary">
+
+                        <div>
+
+                            <p>
+                                <strong id="assignmentSummary">
+                                    0 assignments
+                                </strong>
+                            </p>
+
+                            <p class="muted-text">
+                                Stay organized and work through one thing at a time.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Assignment List -->
+                <section class="task-list-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <p class="small-label">All your work</p>
+
+                            <h2>Assignment list</h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- JavaScript will render assignments here -->
+                    <div
+                        class="task-list"
+                        id="assignmentList">
+
+                    </div>
+
+                </section>
+
+
+                <!-- Footer -->
+                <footer class="footer">
+
+                    <p>&copy; 2026 Monotask</p>
+
+                    <div class="footer-links">
+
+                        <a href="#">About</a>
+                        <a href="#">Privacy</a>
+                        <a href="#">Help</a>
+
+                    </div>
+
+                </footer>
+
+            </main>
+
+        </div>
+
+
+        <!-- JavaScript Link -->
+        <script src="../js/app.js"></script>
+
+    </body>
+</html>
