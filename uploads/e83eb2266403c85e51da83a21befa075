@@ -1,0 +1,37 @@
+﻿Final Project: Build the Web
+Fundamentals of Web Development
+The Goal
+The purpose of this project is simple: take the web technologies you learn in this course and use them to design and build something real. Throughout the term you'll learn HTML, CSS, JavaScript, React, server-side scripting, databases, and the practices around usability, accessibility, and security. This project is where you put those pieces together and prove to yourself that you can apply them - not just recognize them on an exam.
+You choose what to build. It can be a personal portfolio, a small web app, an interactive tool, a data dashboard, a game, a site for a club or cause you care about - anything that gives you room to show off the technologies from this class. The topic is yours; what matters is that the project genuinely uses the skills we cover.
+What You'll Build
+Your project must be a working, browser-based web project that meaningfully uses the core technologies of the course. At minimum it should include:
+● Structure - A multi-section site or app built with clean, semantic HTML.
+● Style - A deliberate, consistent visual design using CSS, including a modern layout technique (flexbox or grid).
+● Interactivity - At least one real interactive feature built with JavaScript that does something useful.
+● Depth - At least one topic from the second half of the course - React components, a server-side or Node feature, working with data or an API, or state management.
+● Craft - Attention to usability, accessibility, and at least one security/good-practice concept from the course.
+This is a team project. You'll work in groups of 2-3 - individual projects are not permitted, since collaboration is part of what this project is meant to teach. Every member must contribute meaningfully and be able to explain the whole project, not just their own part.
+Milestones & Checkpoints
+You won't build this all at once. The project grows alongside the course through staged checkpoints, so you always have working code and never face a last-minute scramble. Each checkpoint is low-stakes but counts toward your project grade.
+CheckpointWhenWhat to submitProposalWeek 3 (Sep 1)A short proposal: what you're building, who it's for, your team members, and which course technologies you plan to use. You must also create a GitHub repository for the project and give the instructor access, so progress can be followed throughout the term.Checkpoint 1Week 4 (Sep 10)Working HTML + CSS structure of your site - the static shell, styled and laid out.Checkpoint 2Week 8 (Oct 8)JavaScript interactivity added - at least one working dynamic feature.Checkpoint 3Week 11 (Oct 29)Advanced feature integrated (React / server-side / data / state) and project nearing completion.Final + DemoWeek 16 (Dec 1-3)Completed project, README, and in-class presentation.Grading Rubric (100 points)
+The rubric rewards applying the technologies of the course and the professional practices that go with them. Depth of application matters more than sheer size - a focused project that uses each technology well beats a sprawling one that uses them superficially.
+CriterionPointsWhat we're looking forHTML Structure & Semantics15Valid, well-organized HTML5. Uses semantic elements (header, nav, main, section, footer) appropriately. Content is logically structured, not just visually arranged.CSS Styling & Layout15Deliberate, consistent styling. Uses a modern layout technique (flexbox or grid). Responsive or adapts reasonably to different screen sizes. Styling is external, not inline.JavaScript Interactivity20At least one meaningful interactive feature built with JavaScript (form validation, dynamic content, DOM manipulation, data fetching, etc.). Code runs without console errors and does something useful - not a token script.Application of Advanced Topics15Demonstrates one or more topics from the second half of the course - e.g. React components, a server-side/PHP or Node feature, working with data or an API, or managing state. Depth matters more than breadth.Usability & Accessibility10Intuitive navigation and clear layout. Applies accessibility basics: alt text on images, sufficient color contrast, keyboard-navigable, logical heading order.Security & Good Practices5Shows awareness of at least one security/good-practice concept from the course (input validation, avoiding obvious injection risks, safe handling of user data, HTTPS assets).Creativity & Completeness10The project is finished, cohesive, and does what it set out to do. Goes beyond the minimum in either scope, polish, or originality.Presentation & Documentation10Clear final presentation explaining what was built, why, and which technologies were used. Includes a short README describing the project, features, and how to run it.TOTAL100The Final Presentation
+In the last week you'll give a short in-class presentation (about 5-7 minutes). Walk us through what you built, why you built it, and - most importantly - which technologies from the course you used and how. A quick live demo is expected. This is your chance to show what you learned to apply.
+Team Peer Feedback
+Since this is a team project, every member will complete a confidential peer feedback form after the project is turned in. You'll rate each of your teammates - and yourself - on their contribution to the project. The purpose is fairness: a project grade should reflect the work each person actually put in, and this gives everyone a voice in how that's assessed.
+You will rate each team member on:
+● Effort - How much effort the member put into the project relative to the team.
+● Participation - How actively the member participated in meetings, decisions, and communication.
+● Contribution - The quality and reliability of the work the member contributed.
+● Collaboration - Whether the member was dependable, met deadlines, and was a good teammate.
+Each category is scored on a simple scale (for example, 1 = did not contribute, 5 = essential contributor), with space for a short written comment. The form is submitted individually and privately through Canvas - your teammates will not see your ratings.
+How it affects grades: the team earns a shared project score from the rubric, but individual grades may be adjusted up or down based on the peer feedback. A member whose peers consistently report they contributed little can receive a reduced share of the project grade; a member who carried more than their share may be recognized. Completing the peer feedback form is itself required - failing to submit it affects your own project grade.
+Because every project is a team project, this feedback applies to everyone. You must complete the form for each of your teammates and for yourself; failing to submit it affects your own project grade.
+Deliverables Checklist
+● All project source files (HTML, CSS, JS, and any server/React code), maintained in your GitHub repository.
+● A GitHub repository with your project code and commit history, with instructor access.
+● A short README: project description, feature list, technologies used, and how to run it.
+● A live or runnable version (hosted link, or clear run instructions).
+● Your in-class presentation.
+● Your completed peer feedback form for every teammate and yourself.
+Above all: build something you'd be proud to show someone. This is the project where the whole course comes together.

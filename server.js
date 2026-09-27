@@ -4,6 +4,12 @@ const express = require("express");
 const cors = require("cors");
 const OpenAI = require("openai");
 
+/* Files Reader Install */
+const multer = require("multer");
+const mammoth = require("mammoth");
+const { PDFParse } = require("pdf-parse");
+const pptx2json = require("pptx2json");
+
 const app = express();
 
 const openai = new OpenAI({
@@ -15,22 +21,120 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cors());
 
+const upload = multer({ dest: "uploads/" });
+
 app.get("/api/test", function (req, res) {
     res.json({
         message: "Monotask backend is working!"
     });
 });
 
-app.post("/api/analyze-assignment", async function (req, res) {
+app.post("/api/analyze-assignment", upload.single("file"), async function(req, res) {
     const assignment = req.body;
 
     console.log("Received assignment:", assignment);
+    console.log("Received file:", req.file);
+    
+    let fileText = "";
+
+    let imageData = null;
+
+    if (req.file) {
+        if (req.file.mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            const result = await mammoth.extractRawText({
+                path: req.file.path
+            });
+
+            fileText = result.value;
+        } 
+        
+        else if (req.file.mimetype === "application/pdf") {
+            const pdfBuffer = require("fs").readFileSync(req.file.path);
+
+            const parser = new PDFParse({
+                data: pdfBuffer
+            });
+
+            const result = await parser.getText();
+
+            fileText = result.text;
+
+            await parser.destroy();
+        }
+
+        else if (req.file.mimetype === "text/plain") {
+            const fs = require("fs");
+
+            fileText = fs.readFileSync(req.file.path, "utf8");
+        }
+
+        else if (req.file.mimetype === "image/jpeg" || req.file.mimetype === "image/png") {
+            const fs = require("fs");
+
+            const imageBuffer = fs.readFileSync(req.file.path);
+
+            imageData = imageBuffer.toString("base64");
+        }
+
+        else if (req.file.mimetype === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
+            const fs = require("fs");
+
+            const pptxBuffer = fs.readFileSync(req.file.path);
+
+            const presentation = new pptx2json();
+
+            const result = await presentation.buffer2json(pptxBuffer);
+
+            const textParts = [];
+
+            function collectText(value) {
+                if (Array.isArray(value)) {
+                    for (const item of value) {
+                        collectText(item);
+                    }
+                    return;
+                }
+
+                if (value && typeof value === "object") {
+                    if (Array.isArray(value["a:t"])) {
+                        for (const text of value["a:t"]) {
+                            textParts.push(text);
+                        }
+                    }
+
+                    for (const key of Object.keys(value)) {
+                        collectText(value[key]);
+                    }
+                }
+            }
+
+            collectText(result);
+
+            fileText = textParts.join("\n");
+        }
+
+        console.log("Extracted file text:", fileText);
+    }
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
-    const dueDate = new Date(assignment.dueDate + "T00:00:00");
-    const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+    const todayDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+    );
+
+    const [year, month, day] = assignment.dueDate.split("-");
+
+    const dueDate = new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day)
+    );
+
+    const daysUntilDue = Math.round(
+        (dueDate - todayDate) / (1000 * 60 * 60 * 24)
+    );
 
     console.log("Days until due:", daysUntilDue);
 
@@ -52,10 +156,20 @@ app.post("/api/analyze-assignment", async function (req, res) {
                     - Assignment description
                     - Course
                     - Assignment title
+                    - Uploaded file text, if provided
+
+                    If uploaded file text is provided:
+                    - Use it to understand the actual assignment requirements.
+                    - Use specific requirements from the file when determining the recommendation.
+                    - Use the apparent workload in the file when estimating the time required.
+                    - Do not invent requirements that are not present in the file.
+                    - If the file text conflicts with the user's description, use the assignment file as the primary source for understanding the requirements.
 
                     PRIORITY RULES:
 
-                    You MUST follow these priority rules exactly.
+                    The due date is the primary factor in determining priority.
+
+                    You MUST follow these rules:
 
                     - daysUntilDue <= 0:
                     Priority MUST be "High priority".
@@ -67,18 +181,19 @@ app.post("/api/analyze-assignment", async function (req, res) {
                     Priority MUST be "Medium priority", unless the assignment clearly has a very large workload or unusually difficult requirements. In that case, use "High priority".
 
                     - daysUntilDue >= 4 AND daysUntilDue <= 7:
-                    Priority MUST be "Medium priority".
+                    Priority MUST be "Medium priority", unless the assignment clearly has a very large workload or unusually difficult requirements. In that case, use "High priority".
 
                     - daysUntilDue > 7:
                     Priority MUST be "Low priority", unless the assignment clearly has a very large workload or unusually difficult requirements. In that case, use "Medium priority".
 
                     IMPORTANT:
-                    - The value of daysUntilDue is authoritative.
-                    - Do not ignore or reinterpret daysUntilDue.
-                    - Do not choose Medium priority for an assignment due today or tomorrow.
-                    - Do not choose Low priority for an assignment due today or tomorrow.
-                    - The priority must agree with the due date.
-                    - The student's deadline is more important than the course name.
+                    - daysUntilDue is authoritative.
+                    - Never choose "Low priority" when daysUntilDue <= 7.
+                    - Never choose "Medium priority" when daysUntilDue <= 1.
+                    - Never choose "Low priority" when daysUntilDue <= 1.
+                    - A large workload may increase priority when the assignment is clearly substantial or unusually difficult.
+                    - Do not lower priority because the assignment seems easy.
+                    - Do not use the course name to determine priority.
 
                     RECOMMENDATION RULES:
 
@@ -128,13 +243,28 @@ app.post("/api/analyze-assignment", async function (req, res) {
                 },
                 {
                     role: "user",
-                    content: JSON.stringify({
-                    title: assignment.title,
-                    course: assignment.course,
-                    dueDate: assignment.dueDate,
-                    daysUntilDue: daysUntilDue,
-                    description: assignment.description
-                })
+                    content: [
+                        {
+                            type: "input_text",
+                            text: JSON.stringify({
+                                title: assignment.title,
+                                course: assignment.course,
+                                dueDate: assignment.dueDate,
+                                daysUntilDue: daysUntilDue,
+                                description: assignment.description,
+                                fileText: fileText
+                            })
+                        },
+
+                        ...(imageData
+                            ? [
+                                {
+                                    type: "input_image",
+                                    image_url: `data:${req.file.mimetype};base64,${imageData}`
+                                }
+                            ]
+                            : [])
+                    ]
                 }
             ]
         });

@@ -157,6 +157,8 @@ assignmentForm.addEventListener("submit", async  function(event) {
 
     const description = document.getElementById("assignmentDescription").value.trim();
 
+    const assignmentFile = document.getElementById("assignmentFile").files[0];
+
 
     // Create an assignment object
     const assignment = {
@@ -179,14 +181,20 @@ assignmentForm.addEventListener("submit", async  function(event) {
     };
 
     try {
+        const formData = new FormData();
+
+        formData.append("title", assignment.title);
+        formData.append("course", assignment.course);
+        formData.append("dueDate", assignment.dueDate);
+        formData.append("description", assignment.description);
+
+        if (assignmentFile) {
+            formData.append("file", assignmentFile);
+        }
+
         const response = await fetch("http://localhost:3000/api/analyze-assignment", {
             method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(assignment)
+            body: formData
         });
 
         const aiResult = await response.json();
