@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Plan | Monotask</title>
+        <link rel="stylesheet" href="../css/styles.css">
+    </head>
+
+    <body>
+
+        <div class="app-layout">
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-top">
+                    <a href="index.html" class="brand">Monotask</a>
+
+                    <nav class="sidebar-nav">
+                        <a href="index.html" class="nav-link">Today</a>
+                        <a href="assignments.html" class="nav-link">Assignments</a>
+                        <a href="plan.html" class="nav-link active">My Plan</a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-bottom">
+                    <section class="streak-card">
+                        <p class="small-label">Current streak</p>
+                        <h3 id="currentStreak">0 Days</h3>
+                        <p id="streakMessage">Keep it going!</p>
+                    </section>
+
+                    <div class="user-profile">
+                        <div>
+                            <p class="user-name">Student</p>
+                            <p class="user-role">College Student</p>
+                        </div>
+
+                        <button type="button" class="profile-menu-button">
+                            ...
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="dashboard">
+
+                <!-- Page Header -->
+                <section class="dashboard-header">
+                    <div>
+                        <p class="small-label">Your schedule</p>
+
+                        <h1>My Plan</h1>
+
+                        <p class="subtitle">
+                            A simple view of what you have coming up.
+                        </p>
+                    </div>
+                </section>
+
+
+                <!-- Weekly Plans -->
+                <section class="plan-weeks">
+
+                    <!-- This Week -->
+                    <div class="my-plan-week-card">
+                        <div class="section-heading">
+                            <div>
+                                <p class="small-label">This week</p>
+                                <h2>This Week</h2>
+                            </div>
+                        </div>
+
+                        <div class="plan-days" id="thisWeekPlan">
+                            <!-- Assignments will be added here with JavaScript -->
+                        </div>
+                    </div>
+
+
+                    <!-- Next Week -->
+                    <div class="my-plan-week-card">
+                        <div class="section-heading">
+                            <div>
+                                <p class="small-label">Coming up</p>
+                                <h2>Next Week</h2>
+                            </div>
+                        </div>
+
+                        <div class="plan-days" id="nextWeekPlan">
+                            <!-- Assignments will be added here with JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Calendar -->
+                <section class="calendar-section">
+                    <div class="section-heading">
+
+                        <div>
+                            <p class="small-label">Your schedule</p>
+                            <h2>Calendar</h2>
+                        </div>
+                    </div>
+
+                    <div class="calendar-card">
+                        <div class="calendar-header">
+                            <button type="button" class="calendar-nav-button" id="previousMonth">
+                                ←
+                            </button>
+
+                            <h3 id="calendarMonth">
+                                September 2026
+                            </h3>
+
+                            <button type="button" class="calendar-nav-button" id="nextMonth">
+                                →
+                            </button>
+                        </div>
+
+
+                        <div class="calendar-weekdays">
+                            <span>Sun</span>
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+                        </div>
+
+
+                        <div class="calendar-grid" id="calendarGrid">
+                            <!-- Calendar days will be generated with JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Full Description Modal -->
+                <div class="modal-overlay" id="descriptionModal">
+                    <div class="assignment-modal">
+
+                        <div class="modal-header">
+                            <div>
+                                <p class="small-label">Assignment description</p>
+                            </div>
+
+                            <button type="button" class="modal-close" id="closeDescriptionModal" aria-label="Close">
+                                &times;
+                            </button>
+                        </div>
+
+                        <div class="description-modal-content">
+                            <p id="fullDescription"></p>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- Footer -->
+                <footer class="footer">
+
+                    <p>&copy; 2026 Monotask</p>
+
+                    <div class="footer-links">
+                        <a href="#">About</a>
+                        <a href="#">Privacy</a>
+                        <a href="#">Help</a>
+                    </div>
+
+                </footer>
+
+            </main>
+
+        </div>
+
+
+        <script src="../js/app.js"></script>
+
+    </body>
+</html>

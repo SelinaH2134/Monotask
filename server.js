@@ -20,6 +20,11 @@ const PORT = 3000;
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static("."));
+
+app.get("/", function (req, res) {
+    res.sendFile(__dirname + "/html/index.html");
+});
 
 const upload = multer({ dest: "uploads/" });
 

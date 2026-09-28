@@ -4,6 +4,8 @@ let nextTaskQueue = [];
 
 let streakStartDate = null;
 
+let calendarDate = new Date();
+
 const addAssignmentButton = document.getElementById("addAssignmentButton");
 
 const assignmentModal = document.getElementById("assignmentModal");
@@ -15,6 +17,8 @@ const cancelAssignment = document.getElementById("cancelAssignment");
 const assignmentForm = document.getElementById("assignmentForm");
 
 const taskList = document.getElementById("taskList");
+
+const assignmentList = document.getElementById("assignmentList");
 
 const planList = document.getElementById("planList");
 
@@ -53,48 +57,54 @@ const addAssignmentSubmit = document.getElementById("addAssignmentSubmit");
 const aiAnalyzingMessage = document.getElementById("aiAnalyzingMessage");
 
 // Finish assignment
-finishNextTask.addEventListener("click", function () {
-    const nextTask = nextTaskQueue[0];
+if (finishNextTask) {
+    finishNextTask.addEventListener("click", function () {
+        const nextTask = nextTaskQueue[0];
 
-    if (!nextTask) {
-        return;
-    }
+        if (!nextTask) {
+            return;
+        }
 
-    nextTask.completed = true;
-    nextTask.completedAt = new Date().toISOString();
+        nextTask.completed = true;
+        nextTask.completedAt = new Date().toISOString();
 
-    if (!streakStartDate) {
-        streakStartDate = getTodayDateString();
-        saveStreakStartDate();
-    }
-    
+        const today = getTodayDateString();
 
-    /* Remove the completed assignment from the queue */
-    nextTaskQueue = nextTaskQueue.filter(function (assignment) {
-        return assignment.id !== nextTask.id;
+        if (!streakStartDate && nextTask.dueDate <= today) {
+            streakStartDate = today;
+            saveStreakStartDate();
+        }
+        
+
+        /* Remove the completed assignment from the queue */
+        nextTaskQueue = nextTaskQueue.filter(function (assignment) {
+            return assignment.id !== nextTask.id;
+        });
+
+        saveAssignments();
+        sortAssignments();
+        updateGlance();
+        updateGentlePlan();
+        updateNextTask();
+        updateDailyProgress();
+        updateStreak();
+        updateCalendar();
+
     });
-
-    saveAssignments();
-    sortAssignments();
-    updateGentlePlan();
-    updateNextTask();
-    updateDailyProgress();
-    updateStreak();
-});
+}
 
 // Skip next task
-skipNextTask.addEventListener("click", function () {
-    if (nextTaskQueue.length <= 1) {
-        return;
-    }
+if (skipNextTask) {
+    skipNextTask.addEventListener("click", function () {
+        if (nextTaskQueue.length <= 1) {
+            return;
+        }
 
-    /* Move the current assignment to the back of the current due-date queue */
-    const skippedTask = nextTaskQueue.shift();
-
-    nextTaskQueue.push(skippedTask);
-
-    updateNextTask();
-});
+        const skippedTask = nextTaskQueue.shift();
+        nextTaskQueue.push(skippedTask);
+        updateNextTask();
+    });
+}
 
 // Load Saved Assignments
 const savedAssignments = localStorage.getItem("monotaskAssignments");
@@ -112,174 +122,211 @@ if (savedStreakStartDate) {
     streakStartDate = savedStreakStartDate;
 }
 
-// Call the function
-updateGentlePlan();
-updateNextTask();
-updateDailyProgress();
-// 60,000 milliseconds = 1 minute. Check the time every minute
-updateGreeting(); setInterval(updateGreeting, 60000);
-updateStreak();
-updateCurrentDate();
-
 // Open Modal
-addAssignmentButton.addEventListener("click", function() {
-    assignmentModal.classList.add("active");
-});
+if (addAssignmentButton && assignmentModal) {
+    addAssignmentButton.addEventListener("click", function() {
+        assignmentModal.classList.add("active");
+    });
+}
 
 
 // Close Modal
-closeAssignmentModal.addEventListener("click", function() {
-    assignmentModal.classList.remove("active");
-});
+if (closeAssignmentModal && assignmentModal) {
+    closeAssignmentModal.addEventListener("click", function() {
+        assignmentModal.classList.remove("active");
+    });
+}
 
 
 // Cancel Button
-cancelAssignment.addEventListener("click", function() {
-    assignmentModal.classList.remove("active");
-});
+if (cancelAssignment && assignmentModal) {
+    cancelAssignment.addEventListener("click", function() {
+        assignmentModal.classList.remove("active");
+    });
+}
 
-// Add to the List
-assignmentForm.addEventListener("submit", async  function(event) {
+// Add to the assignment
+if (assignmentForm) {
+    assignmentForm.addEventListener("submit", async function(event) {
 
-    // Stop the page from refreshing
-    event.preventDefault();
+        // Stop the page from refreshing
+        event.preventDefault();
 
-    addAssignmentSubmit.hidden = true;
-    cancelAssignment.hidden = true;
-    aiAnalyzingMessage.hidden = false;
+        addAssignmentSubmit.hidden = true;
+        cancelAssignment.hidden = true;
+        aiAnalyzingMessage.hidden = false;
 
-    // Get information from the form
-    const title = document.getElementById("assignmentTitle").value.trim();
+        // Get information from the form
+        const title = document.getElementById("assignmentTitle").value.trim();
 
-    const course = document.getElementById("assignmentClass").value.trim();
+        const course = document.getElementById("assignmentClass").value.trim();
 
-    const dueDate = document.getElementById("assignmentDueDate").value;
+        const dueDate = document.getElementById("assignmentDueDate").value;
 
-    const description = document.getElementById("assignmentDescription").value.trim();
+        const description = document.getElementById("assignmentDescription").value.trim();
 
-    const assignmentFile = document.getElementById("assignmentFile").files[0];
+        const assignmentFile = document.getElementById("assignmentFile").files[0];
 
 
-    // Create an assignment object
-    const assignment = {
+        // Create an assignment object
+        const assignment = {
 
-        id: Date.now(),
-        title: title,
-        course: course,
-        dueDate: dueDate,
-        description: description,
+            id: Date.now(),
+            title: title,
+            course: course,
+            dueDate: dueDate,
+            description: description,
 
-        completed: false,
-        completedAt: null,
+            completed: false,
+            completedAt: null,
 
-        // AI recommendation data
-        priority: "Analyzing...",
-        aiReason: "",
-        recommendation: "",
-        estimatedMinutes: null
+            // AI recommendation data
+            priority: "Analyzing...",
+            aiReason: "",
+            recommendation: "",
+            estimatedMinutes: null
 
-    };
+        };
 
-    try {
-        const formData = new FormData();
+        try {
+            const formData = new FormData();
 
-        formData.append("title", assignment.title);
-        formData.append("course", assignment.course);
-        formData.append("dueDate", assignment.dueDate);
-        formData.append("description", assignment.description);
+            formData.append("title", assignment.title);
+            formData.append("course", assignment.course);
+            formData.append("dueDate", assignment.dueDate);
+            formData.append("description", assignment.description);
 
-        if (assignmentFile) {
-            formData.append("file", assignmentFile);
+            if (assignmentFile) {
+                formData.append("file", assignmentFile);
+            }
+
+            const response = await fetch("http://localhost:3000/api/analyze-assignment", {
+                method: "POST",
+                body: formData
+            });
+
+            const aiResult = await response.json();
+
+            assignment.priority = aiResult.priority;
+            assignment.aiReason = aiResult.reason;
+            assignment.recommendation = aiResult.recommendation;
+            assignment.estimatedMinutes = aiResult.estimatedMinutes;
+
+        } catch (error) {
+            console.error("AI analysis failed:", error);
+
+            assignment.priority = "AI unavailable";
+            assignment.aiReason = "AI analysis could not be completed.";
+            assignment.recommendation = "You can still work on this assignment manually.";
+            assignment.estimatedMinutes = null;
         }
 
-        const response = await fetch("http://localhost:3000/api/analyze-assignment", {
-            method: "POST",
-            body: formData
-        });
+        // Add assignment to array
+        assignments.push(assignment);
 
-        const aiResult = await response.json();
+        saveAssignments();
 
-        assignment.priority = aiResult.priority;
-        assignment.aiReason = aiResult.reason;
-        assignment.recommendation = aiResult.recommendation;
-        assignment.estimatedMinutes = aiResult.estimatedMinutes;
+        // Sort and display assignment
+        sortAssignments();
+        updateGlance();
+        updateGentlePlan();
+        updateNextTask();
+        updateDailyProgress();
+        updateStreak();
+        updateCalendar();
+        console.log("New assignment:", assignment);
 
-    } catch (error) {
-        console.error("AI analysis failed:", error);
+        // Clear the form 
+        assignmentForm.reset();
 
-        assignment.priority = "AI unavailable";
-        assignment.aiReason = "AI analysis could not be completed.";
-        assignment.recommendation = "You can still work on this assignment manually.";
-        assignment.estimatedMinutes = null;
-    }
+        addAssignmentSubmit.hidden = false;
+        cancelAssignment.hidden = false;
+        aiAnalyzingMessage.hidden = true;
 
-    // Add assignment to array
-    assignments.push(assignment);
-
-    saveAssignments();
-
-    // Sort and display assignment
-    sortAssignments();
-    updateGentlePlan();
-    updateNextTask();
-    updateDailyProgress();
-    updateStreak();
-    console.log("New assignment:", assignment);
-
-    // Clear the form 
-    assignmentForm.reset();
-
-    addAssignmentSubmit.hidden = false;
-    cancelAssignment.hidden = false;
-    aiAnalyzingMessage.hidden = true;
-
-    // Close modal
-    assignmentForm.reset();
-    assignmentModal.classList.remove("active");
-
-});
+        // Close modal
+        assignmentForm.reset();
+        assignmentModal.classList.remove("active");
+    
+    });
+}
 
 // Open Full Description Modal
-nextTaskDescription.addEventListener("click", function () {
-    if (!nextTaskDescription.dataset.truncated) {
+if (nextTaskDescription && fullDescription && descriptionModal) {
+    nextTaskDescription.addEventListener("click", function () {
+        if (nextTaskDescription.dataset.truncated !== "true") {
         return;
     }
 
-    fullDescription.textContent = nextTaskDescription.dataset.fullDescription || "";
-    descriptionModal.classList.add("active");
-});
+        fullDescription.textContent = nextTaskDescription.dataset.fullDescription || "";
+        descriptionModal.classList.add("active");
+    });
+}
 
 // Close Full Description Modal
-closeDescriptionModal.addEventListener("click", function () {
-    descriptionModal.classList.remove("active");
-});
+if (closeDescriptionModal && descriptionModal) {
+    closeDescriptionModal.addEventListener("click", function () {
+        descriptionModal.classList.remove("active");
+    });
+}
 
 /* Display Assignment Function */
 function addAssignmentToListWithoutSorting(assignment) {
+
+    const list = taskList || assignmentList;
+
+    if (!list) {
+        return;
+    }
 
     const taskItem = document.createElement("div");
 
     taskItem.classList.add("task-list-item");
 
     taskItem.innerHTML = `
-
         <input type="checkbox" class="task-checkbox" aria-label="Mark assignment complete" ${assignment.completed ? "checked" : ""}>
 
         <div class="task-list-info">
-            <h3>${assignment.title}</h3>
+            <h3>
+                <button type="button" class="assignment-title-button">
+                    ${assignment.title}
+                </button>
+            </h3>
 
             <p>${assignment.course || "No class"}</p>
+
+            ${assignment.aiReason ? `<p class="ai-reason">${assignment.aiReason}</p>` : ""}
         </div>
 
         <div class="task-list-due">
             <p>Due ${formatDueDate(assignment.dueDate)}</p>
 
-            <span class="priority">${assignment.priority}</span>
+            <span class="priority ${
+                assignment.priority === "High priority"
+                    ? "high-priority"
+                    : assignment.priority === "Medium priority"
+                        ? "medium-priority"
+                        : "low-priority"
+            }">
+                ${assignment.priority}
+            </span>
         </div>
-
     `;
 
-    taskList.appendChild(taskItem);
+    /* View full description for each assignment by clicking the name of its */
+    const assignmentTitleButton = taskItem.querySelector(".assignment-title-button");
+
+    assignmentTitleButton.addEventListener("click", function () {
+        if (!descriptionModal || !fullDescription) {
+            return;
+        }
+
+        fullDescription.textContent =
+            assignment.description || "No description provided.";
+
+        descriptionModal.classList.add("active");
+    });
+
+    list.appendChild(taskItem);
 
     // Show completed styling
     if (assignment.completed) {
@@ -296,14 +343,26 @@ function addAssignmentToListWithoutSorting(assignment) {
         if (checkbox.checked) {
             assignment.completedAt = new Date().toISOString();
 
-            if (!streakStartDate) {
-                streakStartDate = getTodayDateString();
+            const today = getTodayDateString();
+
+            // Only start a streak for an assignment due today or earlier.
+            if (!streakStartDate && assignment.dueDate <= today) {
+                streakStartDate = today;
                 saveStreakStartDate();
             }
         } 
-        
+
         else {
             assignment.completedAt = null;
+
+            const today = getTodayDateString();
+
+            // Only reset the streak if this assignment is due today
+            // or is already past due.
+            if (assignment.dueDate <= today) {
+                streakStartDate = null;
+                saveStreakStartDate();
+            }
         }
 
         taskItem.classList.toggle(
@@ -313,10 +372,12 @@ function addAssignmentToListWithoutSorting(assignment) {
 
         saveAssignments();
         sortAssignments();
+        updateGlance();
         updateGentlePlan();
         updateNextTask();
         updateDailyProgress();
         updateStreak();
+        updateCalendar();
 
     });
 
@@ -443,7 +504,13 @@ function sortAssignments() {
     });
 
     // Clear current task list
-    taskList.innerHTML = "";
+    const list = taskList || assignmentList;
+
+    if (!list) {
+        return;
+    }
+
+    list.innerHTML = "";
 
     // Display assignments in sorted order
     assignments.forEach(function (assignment) {
@@ -455,8 +522,68 @@ function sortAssignments() {
     });
 }
 
+/* Today at a Glance Function */
+function updateGlance() {
+    const dueTodayCount = document.getElementById("dueTodayCount");
+    const weekAssignmentCount = document.getElementById("weekAssignmentCount");
+    const nextDeadlineTitle = document.getElementById("nextDeadlineTitle");
+    const nextDeadlineDate = document.getElementById("nextDeadlineDate");
+
+    // This page does not have the glance card
+    if (!dueTodayCount || !weekAssignmentCount || !nextDeadlineTitle || !nextDeadlineDate) {
+        return;
+    }
+
+    const today = getTodayDateString();
+
+    // Ignore past-due assignments
+    const activeAssignments = assignments.filter(function (assignment) {
+        return !isPastDue(assignment.dueDate);
+    });
+
+    // Assignments due today
+    const dueToday = activeAssignments.filter(function (assignment) {
+        return assignment.dueDate === today;
+    });
+
+    dueTodayCount.textContent = dueToday.length;
+
+    // Assignments due this week
+    const thisWeek = activeAssignments.filter(function (assignment) {
+        return isThisWeek(assignment.dueDate);
+    });
+
+    weekAssignmentCount.textContent = thisWeek.length;
+
+    // Find the next upcoming assignment
+    const upcomingAssignments = activeAssignments
+        .filter(function (assignment) {
+            return assignment.dueDate >= today;
+        })
+
+        .sort(function (a, b) {
+            return a.dueDate.localeCompare(b.dueDate);
+        });
+
+    if (upcomingAssignments.length === 0) {
+        nextDeadlineTitle.textContent = "No upcoming assignments";
+        nextDeadlineDate.textContent = "You're all caught up.";
+        return;
+    }
+
+    const nextAssignment = upcomingAssignments[0];
+
+    nextDeadlineTitle.textContent = nextAssignment.title;
+    nextDeadlineDate.textContent = `Due ${formatDueDate(nextAssignment.dueDate)}`;
+}
+
 /* Gentle Plan Function */
 function updateGentlePlan() {
+
+    /* Assignment page doesn't have gentle plan */
+    if (!planList) {
+        return;
+    }
 
     planList.innerHTML = "";
 
@@ -528,7 +655,15 @@ function updateGentlePlan() {
 
             <div class="plan-info">
                 <h3>${assignment.title}</h3>
-                <p>${assignment.priority}</p>
+                <p class="priority ${
+                    assignment.priority === "High priority"
+                        ? "high-priority"
+                        : assignment.priority === "Medium priority"
+                            ? "medium-priority"
+                            : "low-priority"
+                }">
+                    ${assignment.priority}
+                </p>
             </div>
         `;
 
@@ -553,6 +688,18 @@ function updateGentlePlan() {
 
 /* Update the Next Task Function */
 function updateNextTask() {
+
+    if (
+        !nextTaskTitle ||
+        !nextTaskCourse ||
+        !nextTaskDue ||
+        !whyTaskText ||
+        !nextTaskDescription ||
+        !skipNextTask
+    ) {
+        return;
+    }
+
     const availableTasks = assignments.filter(function (assignment) {
         return !assignment.completed && !isPastDue(assignment.dueDate);
     });
@@ -563,9 +710,18 @@ function updateNextTask() {
         nextTaskTitle.textContent = "You're all caught up!";
         nextTaskCourse.textContent = "";
         nextTaskDue.textContent = "";
-        whyTaskText.textContent = "You have no upcoming assignments.";
 
-        skipNextTask.disabled = true;
+        // Hide the AI explanation
+        whyTaskText.textContent = "";
+        whyTaskText.closest(".why-task").style.display = "none";
+
+        // Hide the description
+        nextTaskDescription.textContent = "";
+        nextTaskDescription.style.display = "none";
+
+        // Hide the action buttons
+        finishNextTask.style.display = "none";
+        skipNextTask.style.display = "none";
 
         return;
     }
@@ -618,6 +774,12 @@ function updateNextTask() {
         return;
     }
 
+    // Show the description and buttons when there is an active task
+    whyTaskText.closest(".why-task").style.display = "";
+    nextTaskDescription.style.display = "";
+    finishNextTask.style.display = "";
+    skipNextTask.style.display = "";
+
     // The user can only click "Not now" when there is another assignment on the same due date
     skipNextTask.disabled = nextTaskQueue.length <= 1;
 
@@ -653,6 +815,11 @@ function updateNextTask() {
 
 /* Update Daily Progress Function */
 function updateDailyProgress() {
+
+    if (!dailyProgressText || !dailyProgressBar || !dailyProgressPercent) {
+        return;
+    }
+
     const activeAssignments = assignments.filter(function (assignment) {
         return !isPastDue(assignment.dueDate);
     });
@@ -679,6 +846,11 @@ function updateDailyProgress() {
 /* Greeting the user base on the user's time Function */
 function updateGreeting() {
     const greeting = document.getElementById("greeting");
+
+    if (!greeting) {
+        return;
+    }
+
     const currentHour = new Date().getHours();
 
     if (currentHour < 12) {
@@ -727,6 +899,12 @@ function updateStreak() {
         const daysAssignments = assignments.filter(function (assignment) {
             return assignment.dueDate === dateString;
         });
+
+        // Future due dates should not affect the current streak yet.
+        if (currentDate > today) {
+            currentDate.setDate(currentDate.getDate() + 1);
+            continue;
+        }
 
         // If there were no assignments on this day,
         // the day counts as successful once the streak has started.
@@ -806,6 +984,10 @@ function getTodayDateString() {
 function updateCurrentDate() {
     const currentDate = document.getElementById("currentDate");
 
+    if (!currentDate) {
+        return;
+    }
+
     const today = new Date();
 
     currentDate.textContent = today.toLocaleDateString("en-US", {
@@ -824,20 +1006,380 @@ function getShortDescription(description) {
         };
     }
 
-    const sentences = description.match(/[^.!?]+[.!?]+/g) || [description];
+    const cleanDescription = description.trim();
 
-    let shortDescription = sentences.slice(0, 2).join(" ").trim();
-
-    if (shortDescription.length > 180) {
-        shortDescription = shortDescription.slice(0, 180).trim() + "...";
+    if (cleanDescription.length <= 180) {
+        return {
+            text: cleanDescription,
+            truncated: false
+        };
     }
 
-    const truncated = shortDescription !== description.trim();
-
     return {
-        text: shortDescription,
-        truncated: truncated
+        text: cleanDescription.slice(0, 180).trim() + "...",
+        truncated: true
     };
 }
+
+/* Update My Plan Function */
+function updateMyPlan() {
+    const thisWeekContainer = document.getElementById("thisWeekPlan");
+    const nextWeekContainer = document.getElementById("nextWeekPlan");
+
+    if (!thisWeekContainer || !nextWeekContainer) {
+        return;
+    }
+
+    thisWeekContainer.innerHTML = "";
+    nextWeekContainer.innerHTML = "";
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const dayOfWeek = today.getDay();
+
+    // Sunday = 0
+    const startOfThisWeek = new Date(today);
+    startOfThisWeek.setDate(today.getDate() - dayOfWeek);
+
+    const endOfThisWeek = new Date(startOfThisWeek);
+    endOfThisWeek.setDate(startOfThisWeek.getDate() + 6);
+
+    const startOfNextWeek = new Date(endOfThisWeek);
+    startOfNextWeek.setDate(endOfThisWeek.getDate() + 1);
+
+    const endOfNextWeek = new Date(startOfNextWeek);
+    endOfNextWeek.setDate(startOfNextWeek.getDate() + 6);
+
+    function getDateFromString(dateString) {
+        const parts = dateString.split("-");
+
+        return new Date(
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
+        );
+    }
+
+    function isBetween(date, start, end) {
+        return date >= start && date <= end;
+    }
+
+    function renderWeek(container, startDate, endDate) {
+
+        const weekAssignments = assignments.filter(function (assignment) {
+
+            if (!assignment.dueDate) {
+                return false;
+            }
+
+            const dueDate = getDateFromString(assignment.dueDate);
+
+            return isBetween(dueDate, startDate, endDate);
+
+        });
+
+        if (weekAssignments.length === 0) {
+
+            container.innerHTML = `
+                <p class="empty-plan">
+                    No assignments scheduled for this week.
+                </p>
+            `;
+
+            return;
+        }
+
+        const assignmentsByDay = {};
+
+        weekAssignments.forEach(function (assignment) {
+
+            if (!assignmentsByDay[assignment.dueDate]) {
+                assignmentsByDay[assignment.dueDate] = [];
+            }
+
+            assignmentsByDay[assignment.dueDate].push(assignment);
+
+        });
+
+        const sortedDates = Object.keys(assignmentsByDay).sort();
+
+        sortedDates.forEach(function (dateString) {
+
+            const date = getDateFromString(dateString);
+
+            const day = document.createElement("div");
+            day.className = "my-plan-item";
+
+            const allCompleted = assignmentsByDay[dateString].every(function (assignment) {
+                return assignment.completed;
+            });
+
+            if (allCompleted) {
+                day.classList.add("completed");
+            }
+
+            const dayName = date.toLocaleDateString("en-US", {
+                weekday: "short"
+            }).toUpperCase();
+
+            const dayNumber = date.getDate();
+
+            const assignmentsHTML = assignmentsByDay[dateString]
+            .map(function (assignment) {
+                const priorityClass =
+                    assignment.priority === "High priority"
+                        ? "high-priority"
+                        : assignment.priority === "Medium priority"
+                            ? "medium-priority"
+                            : "low-priority";
+
+                return `
+                    <div class="my-plan-assignment">
+                        <div class="my-plan-info">
+                            <h3>${assignment.title}</h3>
+                            <p>${assignment.course || "Assignment"}</p>
+                        </div>
+
+                        <span class="my-plan-status priority ${priorityClass}">
+                            ${assignment.priority || "Priority not available"}
+                        </span>
+                    </div>
+                `;
+            })
+            .join("");
+
+            day.innerHTML = `
+                <div class="my-plan-day">
+                    <span>${dayName}</span>
+                    <strong>${dayNumber}</strong>
+                </div>
+
+                <div class="my-plan-assignment-list">
+                    ${assignmentsHTML}
+                </div>
+            `;
+
+            container.appendChild(day);
+
+        });
+    }
+
+    renderWeek(thisWeekContainer, startOfThisWeek, endOfThisWeek);
+
+    renderWeek(nextWeekContainer, startOfNextWeek, endOfNextWeek);
+}
+
+/* Mark Streak Label on the Calendar Function */
+function isStreakDay(dateString) {
+    const targetDate = new Date(dateString + "T00:00:00");
+    const today = new Date();
+
+    targetDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    // Future dates cannot be streak days.
+    if (targetDate > today) {
+        return false;
+    }
+
+    let checkDate = new Date(today);
+    let streakStart = null;
+
+    while (checkDate >= targetDate) {
+        const checkDateString =
+            checkDate.getFullYear() +
+            "-" +
+            String(checkDate.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(checkDate.getDate()).padStart(2, "0");
+
+        const dayAssignments = assignments.filter(function (assignment) {
+            return assignment.dueDate === checkDateString;
+        });
+
+        // Days with no assignments only count AFTER the streak has started.
+        if (dayAssignments.length === 0) {
+            if (streakStart !== null) {
+                checkDate.setDate(checkDate.getDate() - 1);
+                continue;
+            }
+
+            checkDate.setDate(checkDate.getDate() - 1);
+            continue;
+        }
+
+        const successfulDay = dayAssignments.every(function (assignment) {
+            return assignment.completed === true;
+        });
+
+        if (!successfulDay) {
+            break;
+        }
+
+        // This is a successful assignment day.
+        streakStart = new Date(checkDate);
+
+        checkDate.setDate(checkDate.getDate() - 1);
+    }
+
+    // No successful day means the streak has not started.
+    if (streakStart === null) {
+        return false;
+    }
+
+    return targetDate >= streakStart && targetDate <= today;
+}
+
+/* My Plan Calendar */
+function updateCalendar() {
+    const calendarGrid = document.getElementById("calendarGrid");
+    const calendarMonth = document.getElementById("calendarMonth");
+
+    if (!calendarGrid || !calendarMonth) {
+        return;
+    }
+
+    const year = calendarDate.getFullYear();
+    const month = calendarDate.getMonth();
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    calendarMonth.textContent = firstDay.toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric"
+    });
+
+    calendarGrid.innerHTML = "";
+
+    // Add empty spaces before the first day
+    const startingDay = firstDay.getDay();
+
+    for (let i = 0; i < startingDay; i++) {
+        const emptyDay = document.createElement("div");
+        emptyDay.className = "calendar-day empty";
+        calendarGrid.appendChild(emptyDay);
+    }
+
+    // Add the days of the month
+    for (let dayNumber = 1; dayNumber <= lastDay.getDate(); dayNumber++) {
+        const day = document.createElement("div");
+        day.className = "calendar-day";
+
+        const number = document.createElement("span");
+        number.className = "calendar-day-number";
+        number.textContent = dayNumber;
+        day.appendChild(number);
+
+        const dateString =
+            year +
+            "-" +
+            String(month + 1).padStart(2, "0") +
+            "-" +
+            String(dayNumber).padStart(2, "0");
+
+        // Show TODAY and fire on the calendar
+        const today = new Date();
+
+        if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === dayNumber) {
+            const todayRow = document.createElement("div");
+            todayRow.className = "calendar-today-row";
+
+            const todayLabel = document.createElement("span");
+            todayLabel.className = "calendar-today-label";
+            todayLabel.textContent = "TODAY";
+
+            todayRow.appendChild(todayLabel);
+
+            if (isStreakDay(dateString)) {
+                const fire = document.createElement("span");
+                fire.className = "calendar-streak-fire";
+                fire.textContent = "🔥";
+                fire.setAttribute("aria-label", "Streak day");
+
+                todayRow.appendChild(fire);
+            }
+
+            day.appendChild(todayRow);
+        }
+
+        // Find assignments due on this date
+        const dayAssignments = assignments.filter(function (assignment) {
+            return assignment.dueDate === dateString;
+        });
+
+        // Add assignments to the calendar day
+        dayAssignments.forEach(function (assignment) {
+            const assignmentElement = document.createElement("div");
+
+            const priorityClass =
+                assignment.priority === "High priority"
+                    ? "high-priority"
+                    : assignment.priority === "Medium priority"
+                        ? "medium-priority"
+                        : "low-priority";
+
+            assignmentElement.className = "calendar-assignment " + priorityClass;
+            assignmentElement.textContent = assignment.title;
+
+            assignmentElement.addEventListener("click", function () {
+                const descriptionModal = document.getElementById("descriptionModal");
+                const fullDescription = document.getElementById("fullDescription");
+
+                if (descriptionModal && fullDescription) {
+                    fullDescription.textContent =
+                        assignment.description || "No description provided.";
+
+                    descriptionModal.classList.add("active");
+                }
+            });
+
+            day.appendChild(assignmentElement);
+        });
+
+        calendarGrid.appendChild(day);
+    }
+
+    // Make even columns
+    const totalCells = startingDay + lastDay.getDate();
+    const remainingCells = (7 - (totalCells % 7)) % 7;
+
+    for (let i = 0; i < remainingCells; i++) {
+        const emptyDay = document.createElement("div");
+        emptyDay.className = "calendar-day empty";
+        calendarGrid.appendChild(emptyDay);
+    }
+}
+
+const previousMonth = document.getElementById("previousMonth");
+const nextMonth = document.getElementById("nextMonth");
+
+if (previousMonth) {
+    previousMonth.addEventListener("click", function () {
+        calendarDate.setMonth(calendarDate.getMonth() - 1);
+        updateCalendar();
+    });
+}
+
+if (nextMonth) {
+    nextMonth.addEventListener("click", function () {
+        calendarDate.setMonth(calendarDate.getMonth() + 1);
+        updateCalendar();
+    });
+}
+
+// Call the function
+updateGlance();
+updateGentlePlan();
+updateNextTask();
+updateDailyProgress();
+// 60,000 milliseconds = 1 minute. Check the time every minute
+updateGreeting(); setInterval(updateGreeting, 60000);
+updateStreak();
+updateCurrentDate();
+updateGentlePlan();
+updateMyPlan();
+updateCalendar();
 
 //localStorage.clear();

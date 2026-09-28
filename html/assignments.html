@@ -36,13 +36,9 @@
 
                     <!-- Assignment Finished Streak -->
                     <section class="streak-card">
-
                         <p class="small-label">Current streak</p>
-
                         <h3 id="currentStreak">0 Days</h3>
-
                         <p id="streakMessage">Keep it going!</p>
-
                     </section>
 
 
@@ -54,11 +50,7 @@
                             <p class="user-role">College Student</p>
                         </div>
 
-                        <button
-                            type="button"
-                            class="profile-menu-button">
-                            ...
-                        </button>
+                        <button type="button" class="profile-menu-button">...</button>
 
                     </div>
 
@@ -73,70 +65,46 @@
 
                 <!-- Page Header -->
                 <section class="dashboard-header">
-
                     <div>
-
                         <p class="small-label">Your work</p>
-
                         <h1>Assignments</h1>
-
-                        <p class="subtitle">
-                            Keep track of everything you need to get done.
-                        </p>
-
+                        <p class="subtitle">Keep track of everything you need to get done.</p>
                     </div>
 
 
                     <!-- Add Assignment -->
-                    <button
-                        type="button"
-                        class="add-assignment-button"
-                        id="addAssignmentButton">
-
+                    <button type="button" class="add-assignment-button" id="addAssignmentButton">
                         + Add Assignment
-
                     </button>
 
                 </section>
 
 
-                <!-- Assignment Summary -->
+                <!-- Daily Progress -->
                 <section class="daily-progress">
-
-                    <div class="progress-summary">
-
-                        <div>
-
-                            <p>
-                                <strong id="assignmentSummary">
-                                    0 assignments
-                                </strong>
-                            </p>
-
-                            <p class="muted-text">
-                                Stay organized and work through one thing at a time.
-                            </p>
-
-                        </div>
-
+                <div class="progress-summary">
+                    <div>
+                    <!-- Assignment left out of total assignments -->
+                    <p><strong id="dailyProgressText">0 of 0 things done</strong></p>
+                    <p class="muted-text">Small steps add up.</p>
                     </div>
+                </div>
 
+                <!-- Progress Bar -->
+                <div class="progress-bar-container">
+                    <progress value="0" max="100" id="dailyProgressBar">0%</progress>
+                    <span id="dailyProgressPercent">0%</span>
+                </div>
                 </section>
 
 
                 <!-- Assignment List -->
                 <section class="task-list-section">
-
                     <div class="section-heading">
-
                         <div>
-
                             <p class="small-label">All your work</p>
-
                             <h2>Assignment list</h2>
-
                         </div>
-
                     </div>
 
 
@@ -144,15 +112,12 @@
                     <div
                         class="task-list"
                         id="assignmentList">
-
                     </div>
 
                 </section>
 
-
                 <!-- Footer -->
                 <footer class="footer">
-
                     <p>&copy; 2026 Monotask</p>
 
                     <div class="footer-links">
@@ -162,13 +127,95 @@
                         <a href="#">Help</a>
 
                     </div>
-
                 </footer>
 
             </main>
-
         </div>
 
+        <!-- Add Assignment Modal -->
+        <div class="modal-overlay" id="assignmentModal">
+            <div class="assignment-modal">
+
+                <div class="modal-header">
+                    <div>
+                        <p class="small-label">New Assignment</p>
+                        <h2>Add Assignment</h2>
+                    </div>
+
+                    <button class="modal-close" id="closeAssignmentModal" type="button" aria-label="Close">×</button>
+                </div>
+
+                <!-- Assignment Form -->
+                <form id="assignmentForm">
+                    <div class="form-group">
+                        <label for="assignmentTitle">Assignment name</label>
+                        <input type="text" id="assignmentTitle" name="assignmentTitle" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assignmentClass">Class</label>
+                        <input type="text" id="assignmentClass" name="assignmentClass" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assignmentDueDate">Due date</label>
+                        <input type="date" id="assignmentDueDate" name="assignmentDueDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assignmentDescription">Description</label>
+
+                        <textarea 
+                        id="assignmentDescription" 
+                        name="assignmentDescription" 
+                        rows="4" 
+                        placeholder="Tell Monotask about the assignment...">
+                        </textarea>
+                    </div>
+                        
+                    <div class="form-group">
+                        <label for="assignmentFile">Assignment file</label>
+
+                        <input type="file" id="assignmentFile" name="assignmentFile" accept=".pdf, .docx, .txt, .jpg, .jpeg, .png, .pptx">
+
+                        <p class="input-help">Optional. You can upload instructions, screenshots, PDFs, or other assignment files.</p>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="secondary-button" id="cancelAssignment">Cancel</button>
+                        <button type="submit" class="primary-button" id="addAssignmentSubmit">Add to my list</button>
+                            
+                        <p id="aiAnalyzingMessage" class="ai-analyzing-message" hidden>
+                        AI analyzing assignment...
+                        </p>
+                    </div>
+                </form>
+                        
+            </div>
+        </div>
+
+        <!-- Full Assignment Description Modal -->
+        <div class="modal-overlay" id="descriptionModal">
+            <div class="assignment-modal">
+                <div class="modal-header">
+                    <div>
+                        <p class="small-label">Assignment description</p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="modal-close"
+                        id="closeDescriptionModal"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div class="description-modal-content">
+                    <p id="fullDescription"></p>
+                </div>
+            </div>
+        </div>
 
         <!-- JavaScript Link -->
         <script src="../js/app.js"></script>
