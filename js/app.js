@@ -1310,7 +1310,7 @@ function updateCalendar() {
         });
 
         // Add assignments to the calendar day
-        dayAssignments.forEach(function (assignment) {
+        dayAssignments.slice(0, 3).forEach(function (assignment) {
             const assignmentElement = document.createElement("div");
 
             const priorityClass =
@@ -1337,6 +1337,40 @@ function updateCalendar() {
 
             day.appendChild(assignmentElement);
         });
+
+        if (dayAssignments.length > 3) {
+            const moreButton = document.createElement("button");
+
+            moreButton.type = "button";
+            moreButton.className = "calendar-more-button";
+            moreButton.textContent = `+${dayAssignments.length - 3} more`;
+
+            moreButton.addEventListener("click", function () {
+                const descriptionModal = document.getElementById("descriptionModal");
+                const fullDescription = document.getElementById("fullDescription");
+
+                if (descriptionModal && fullDescription) {
+                    fullDescription.innerHTML = "";
+
+                    dayAssignments.forEach(function (assignment) {
+                        const assignmentItem = document.createElement("div");
+
+                        assignmentItem.className = "more-assignment-item";
+
+                        assignmentItem.innerHTML = `
+                            <strong>${assignment.title}</strong>
+                            <p>${assignment.course || "Assignment"}</p>
+                        `;
+
+                        fullDescription.appendChild(assignmentItem);
+                    });
+
+                    descriptionModal.classList.add("active");
+                }
+            });
+
+            day.appendChild(moreButton);
+        }
 
         calendarGrid.appendChild(day);
     }

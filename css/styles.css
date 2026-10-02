@@ -686,15 +686,58 @@ a {
     background-color: #FFFFFF;
     color: var(--deep-space-blue);
     cursor: pointer;
-    transition: background-color 0.2s ease,
-                color 0.2s ease,
-                border-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .calendar-nav-button:hover {
     background-color: var(--deep-space-blue);
     color: #FFFFFF;
     border-color: var(--deep-space-blue);
+}
+
+.calendar-more-button {
+    display: block;
+    margin-top: 4px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--sky-blue);
+    font: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.calendar-more-button:hover {
+    color: var(--text);
+    text-decoration: underline;
+}
+
+/* View More Assignment in Calendar */
+.more-assignment-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.more-assignment-item:first-child {
+    padding-top: 0;
+}
+
+.more-assignment-item:last-child {
+    border-bottom: none;
+}
+
+.more-assignment-item strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.more-assignment-item p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
 }
 
 /* Weekdays */
@@ -1669,6 +1712,14 @@ a {
         line-height: 1.2;
         overflow-wrap: anywhere;
         word-break: break-word;
+    }
+
+    .calendar-more-button {
+        margin-top: 4px;
+        padding: 3px 4px;
+        font-size: 0.52rem;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
     }
 }
 
