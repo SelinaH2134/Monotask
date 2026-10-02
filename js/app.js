@@ -514,8 +514,9 @@ function sortAssignments() {
 
     // Display assignments in sorted order
     assignments.forEach(function (assignment) {
-
-        if (!isPastDue(assignment.dueDate)) {
+        // Show the assignment if it is not past due
+        // OR if it is past due but has not been completed.
+        if (!isPastDue(assignment.dueDate) || !assignment.completed) {
             addAssignmentToListWithoutSorting(assignment);
         }
 
@@ -1135,7 +1136,7 @@ function updateMyPlan() {
                             : "low-priority";
 
                 return `
-                    <div class="my-plan-assignment">
+                    <div class="my-plan-assignment ${assignment.completed ? "completed" : ""}">
                         <div class="my-plan-info">
                             <h3>${assignment.title}</h3>
                             <p>${assignment.course || "Assignment"}</p>
@@ -1320,7 +1321,7 @@ function updateCalendar() {
                         ? "medium-priority"
                         : "low-priority";
 
-            assignmentElement.className = "calendar-assignment " + priorityClass;
+            assignmentElement.className = "calendar-assignment " + priorityClass + (assignment.completed ? " completed" : "");
             assignmentElement.textContent = assignment.title;
 
             assignmentElement.addEventListener("click", function () {
@@ -1338,6 +1339,7 @@ function updateCalendar() {
             day.appendChild(assignmentElement);
         });
 
+        /* See More Assignments */
         if (dayAssignments.length > 3) {
             const moreButton = document.createElement("button");
 
@@ -1348,25 +1350,69 @@ function updateCalendar() {
             moreButton.addEventListener("click", function () {
                 const descriptionModal = document.getElementById("descriptionModal");
                 const fullDescription = document.getElementById("fullDescription");
+                const modalBack = document.getElementById("modalBack");
+                const modalLabel = document.getElementById("descriptionModalLabel");
 
-                if (descriptionModal && fullDescription) {
+                if (!descriptionModal || !fullDescription) {
+                    return;
+                }
+
+                function showAllAssignments() {
                     fullDescription.innerHTML = "";
+
+                    if (modalLabel) {
+                        modalLabel.textContent = "All assignments";
+                    }
+
+                    if (modalBack) {
+                        modalBack.style.display = "none";
+                    }
+
+                    if (closeDescriptionModal) {
+                        closeDescriptionModal.style.display = "block";
+                    }
 
                     dayAssignments.forEach(function (assignment) {
                         const assignmentItem = document.createElement("div");
 
-                        assignmentItem.className = "more-assignment-item";
+                        assignmentItem.className = "more-assignment-item" + (assignment.completed ? " completed" : "");
 
                         assignmentItem.innerHTML = `
                             <strong>${assignment.title}</strong>
                             <p>${assignment.course || "Assignment"}</p>
                         `;
 
+                        assignmentItem.addEventListener("click", function () {
+                            fullDescription.innerHTML = `
+                                <p>${assignment.description || "No description provided."}</p>
+                            `;
+
+                            if (modalLabel) {
+                                modalLabel.textContent = "Assignment description";
+                            }
+
+                            if (modalBack) {
+                                modalBack.style.display = "block";
+                            }
+
+                            if (closeDescriptionModal) {
+                                closeDescriptionModal.style.display = "none";
+                            }
+                        });
+
                         fullDescription.appendChild(assignmentItem);
                     });
-
-                    descriptionModal.classList.add("active");
                 }
+
+                // Show all assignments
+                showAllAssignments();
+
+                // Back to all assignments
+                if (modalBack) {
+                    modalBack.onclick = showAllAssignments;
+                }
+
+                descriptionModal.classList.add("active");
             });
 
             day.appendChild(moreButton);

@@ -740,6 +740,55 @@ a {
     font-size: 0.85rem;
 }
 
+.more-assignment-item {
+    cursor: pointer;
+}
+
+.more-assignment-item strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.more-assignment-item strong:hover {
+    color: var(--sky-blue);
+}
+
+/* Finished Assignment in Calendar */
+.my-plan-assignment.completed h3, .more-assignment-item.completed strong {
+    text-decoration: line-through;
+    opacity: 0.4;
+}
+
+.calendar-assignment.completed {
+    text-decoration: line-through;
+}
+
+/* Back Button */
+.modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-back {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: var(--light-blue);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.modal-back:hover {
+    color: var(--sky-blue);
+}
+
 /* Weekdays */
 .calendar-weekdays {
     display: grid;
