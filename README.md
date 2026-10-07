@@ -8,7 +8,57 @@ Instead of requiring students to manually decide what is most important, Monotas
 The goal is simple:
 
 Give students one clear thing to focus on next.
-
+## Table of Contents
+- [Features](#features)
+  - [Assignment Management](#assignment-management)
+  - [AI Assignment Analysis](#ai-assignment-analysis)
+  - [Do This Next](#do-this-next)
+  - [Gentle Plan](#gentle-plan)
+  - [Current Streak](#current-streak)
+  - [User Accounts](#user-accounts)
+  - [Secure Password Management](#secure-password-management)
+  - [Account Deletion](#account-deletion)
+  - [Responsive Design](#responsive-design)
+- [Tech Stack](#tech-stack)
+  - [Frontend](#frontend)
+  - [Backend](#backend)
+  - [Database](#database)
+  - [Authentication](#authentication)
+  - [AI](#ai)
+  - [File Processing](#file-processing)
+  - [Email](#email)
+- [Database Structure](#database-structure)
+  - [Users](#users)
+  - [Assignments](#assignments)
+  - [Password Change Requests](#password-change-requests)
+- [How Assignment Analysis Works](#how-assignment-analysis-works)
+- [Authentication Flow](#authentication-flow)
+  - [Signup](#signup)
+  - [Login](#login)
+  - [Session](#session)
+- [Password Change Flow](#password-change-flow)
+- [Email Verification](#email-verification)
+- [Installation](#installation)
+- [Development](#development)
+- [API Endpoints](#api-endpoints)
+  - [Authentication](#authentication-1)
+  - [Profile](#profile)
+  - [Assignments](#assignments-1)
+  - [AI Analysis](#ai-analysis)
+  - [Password](#password)
+  - [Account](#account)
+- [Design Philosophy](#design-philosophy)
+- [Project Goals](#project-goals)
+- [Current Limitation](#current-limitation)
+- [Future Plans](#future-plans)
+  - [Assignment Breakdown](#assignment-breakdown)
+  - [Smarter Planning](#smarter-planning)
+  - [Calendar Integration](#calendar-integration)
+  - [Deployment](#deployment)
+- [Security Considerations](#security-considerations)
+- [What I Learned](#what-i-learned)
+- [Author](#author)
+- [License](#license)
 # Features
 ### Assignment Management
 - Add assignments with:
@@ -39,3 +89,309 @@ Example:
 Priority: High priority
 Reason: This assignment is due in 2 days and requires a significant amount of work.
 ### Do This Next
+The dashboard highlights the assignment that should receive the student's attention first.
+Instead of presenting another overwhelming list, Monotask provides a simple action, "Finish assignment." This keeps the interface focused on the student's immediate next step.
+### Gentle Plan
+Monotask also provides a weekly overview of upcoming work.
+Assignments that are not immediately urgent can remain visible without competing with the student's current priority.
+### Current Streak
+Monotask includes an assignment-based streak system.
+A successful day is based on completing assignments on time.
+The system considers:
+- Assignment due dates
+- Completion status
+- Completion dates
+- Dates with no assignments
+- Past incomplete assignments
+New accounts begin with a 1 Day streak.
+### User Accounts
+Students can create individual accounts and keep their information separate.
+Each account stores:
+- Name
+- Email
+- School level
+- Password
+- Assignments
+- Streak information
+Authentication is handled using server-side sessions.
+### Secure Password Management
+Users can change their password through a verification process:
+1. Enter the current password
+2. Enter a new password
+3. Confirm the new password
+4. Verify the current password
+5. Receive an email verification code
+6. Enter the verification code
+7. Set the new password
+The verification email is only sent after the initial password checks pass.
+### Account Deletion
+Users can permanently delete their account from their profile.
+Deleting an account also removes its associated:
+- Assignments
+- Password change requests
+- User session
+The action requires confirmation before deletion.
+### Responsive Design
+Monotask is designed to work across different screen sizes.
+The desktop layout uses a sidebar navigation system, while smaller screens transition to a mobile top navigation.
+- The interface adapts those for smaller screens:
+    - Navigation
+    - Dashboard cards
+    - Modals
+    - Forms
+    - Assignment lists
+    - Profile settings
+# Tech Stack
+### Frontend
+- HTML
+- CSS
+- JavaScript
+- Responsive CSS
+- Fetch API
+### Backend
+- Node.js
+- Express.js
+### Database
+- SQLite
+- better-sqlite3
+### Authentication
+- bcrypt
+- express-session
+### AI
+- OpenAI API
+### File Processing
+Monotask uses different libraries depending on the uploaded file type:
+- mammoth - DOCS text extraction
+- pdf-parse - PDF text extraction
+- pptx2json - PowerPoint text extraction
+- multer - File uploads
+### Email
+- Nodemailer
+- Gmail SMTP
+# Database Structure
+Monotask currently uses SQLite.
+### Users
+The users table stores account information:
+- ID
+- Name
+- Email
+- Password
+- School level
+- Streak
+Passwords are stored as bcrypt hashes rather than plain text.
+### Assignments
+The assignments table stores student assignments:
+- ID
+- User ID
+- Titlte
+- Course
+- Due date
+- Description
+- Priority
+- Reason
+- Recommendation
+- Estimated minutes
+- Completed
+- Completed-at
+Each assignment belongs to a specific user.
+### Password Change Requests
+The password change requests table temporarily stores verification codes used during password changes.
+- ID
+- User ID
+- Code
+- Expires-at
+# How Assignment Analysis works
+The AI assignment analysis process follow this general flow:
+1. Student -> Assignment text / file / image
+2. Frontend -> POST / api/analyze-assignment
+3. Express Server
+    -> Extract text from PDF
+    -> Extract text from DOCX
+    -> Extract text from PPTX
+    -> Read TXT files
+    -> Process images
+4. OpenAI API
+5. Assignment Analysis
+    -> Priority
+    -> Reason
+    -> Recommendation
+    -> Estimated time
+6. Frontend
+7. Student's Dashboard
+The OpenAI API key is kept on the backend rather than being exposed in frontend JavaScript.
+# Authentication Flow
+Monotask uses session-based authentication
+### Signup
+Signup Form -> POST /api/signup -> Validate information -> Hash password with bcrypt -> Create user in SQLite
+### Login
+Login Form -> POST /api/login -> Find user -> Compare password with bcrypt -> Create session -> User authenticated
+### Session
+The authenticated user's ID is stored in the sever-side session: req.session.userId
+Authenticated API requests can then identify the current user through that session.
+# Password Change Flow
+Password changes use an additional email verification step.
+1. Current Password + New Password + Confirm Password
+2. Initial Validation
+3. Verify Current Password
+4. Send Email Code
+5. Enter Verification Code
+6. Verify Code
+7. Update Password
+The new password is only changed after the verification process succeeds.
+# Email Verification
+Monotask uses Gmail SMTP through Nodemailer to send password verification codes.
+Environment variables are used for email credentials.
+Example:
+    `EMAIL_USER=your-email@example.com`
+    `EMAIL_PASS=your-app-password`
+Never commit actual credentials to GitHub.
+# Installation
+1. Clone the repository
+`git clone https://github.com/SelinaH2134/Monotask.git`
+Then enter the project directory:
+`cd Monotask`
+2. Install dependencies
+`npm install`
+3. Create your environment file
+Create a .env file in the project root:
+`OPENAI_API_KEY=your_openai_api_key `
+`SESSION_SECRET=your_session_secret`
+
+`EMAIL_USER=your_email`
+`EMAIL_PASS=your_email_app_password`
+Replace the placeholder values with your own credentials.
+4. Start the server
+node js/server.js
+The application should start on:
+http://localhost:3000
+Open the application in your browser
+# Development
+During development, the application can be run locally with:
+`node js/server.js`
+After making backend changes, restart the server so the changes are loaded.
+Frontend changes can be viewed by refreshing the browser.
+# API Endpoints
+Some of the main backend endpoints include:
+**Authentication**
+- POST /api/signup 
+- POST /api/login 
+- GET /api/me 
+- POST /api/logout
+**Profile**
+- PUT /api/profile
+**Assignments**
+- GET /api/assignments 
+- POST /api/assignments 
+- PUT /api/assignments/:id 
+- DELETE /api/assignments/:id
+**AI Analysis**
+- POST /api/analyze-assignment
+**Password**
+- POST /api/change-password/verify 
+- POST /api/change-password/confirm-code 
+- POST /api/change-password/update
+**Account**
+- DELETE /api/account
+# Design Philosophy
+Monotask is designed around the idea of **reducing cognitive overload**.
+Many productivity applications present users with:
+- Long task lists
+- Multiple prorities
+- Complex schedules
+- Large calendars
+- Numerous productivity metrics
+Monotask takes a different approach.
+The interface emphasizes on, "What should I work on right now?"
+The dashboard therefore prioritizes a single actionable assignment while still providing access to the student's broader workload.
+# Project Goals
+The main goals of this project is to:
+- Reduce student overwhelm
+- Turn deadlines into actionable tasks
+- Use AI to understand assignment requirements
+- Automatically determine which assignments deserve attention
+- Give students one clear next action
+- Make assignment planning easier without requiring complicated manual scheduling
+- Provide a personalized experience through user accounts
+# Current Limitation
+Monotask is still under development
+Some planned functionality is not yet fully implemented.
+For example:
+- AI-based assignment prioritization is still being integrated into the complete assignment workflow.
+- AI-generated study plans are still being expanded.
+- Deployment infrastructure has not yet been finalized.
+- Production security and scalability still need additional work.
+The current application is primarily intended as a development and portfolio project.
+# Future Plans
+### Assignment Breakdown
+Large assignments could eventually be divided into smaller actionable steps.
+For example:
+- Research paper:
+    - Choose topic
+    - Find sources
+    - Create outline
+    - Write introduction
+    - Write body paragraphs
+    - Write conclusion
+    - Review and submit
+### Smarter Planning
+Future versions may consider:
+- Multiple upcoming deadlines
+- Estimated assignment effort
+- Student workload
+- Available time
+- Assignment dependencies
+- Upcoming exams
+- Existing commtments
+to create a more personalized plan.
+### Calendar Integration
+A future version coulld allow students to visualize:
+- Assignment deadlines
+- Planned work
+- Completed assignments
+- Upcoming exams
+- Study sessions
+### Deployment
+The project is intended to eventually be deployed so that students can access Monotask without running the application locally.
+# Security Considerations
+Monotask uses several security practices:
+- Passwords are hashed using bcrypt.
+- Authentication uses server-side sessions.
+- Session cookies are configured as HTTP-only.
+- API credentials are stored in environment variables.
+- OpenAI API keys are never intended to be exposed to the frontend.
+- Account deletion requires explicit confirmation.
+- Password changes require verification.
+For production deployment, additional security improvements should be considered, including:
+- HTTPS
+- Secure production cookies
+- CSRF protection
+- Rate limiting
+- Stronger input validation
+- File upload restrictions
+- File size limits
+- Production database configuration
+- Secure secret management
+# What I Learned
+Building Monotask has provided experience with full-stack web development, including:
+- Designing a responsive user interface
+- Building frontend interactions with JavaScript
+- Creating REST-style API endpoints
+- Working with Node.js and Express
+- Using SQLite databases
+- Implementing authentication
+- Hashing passwords with bcrypt
+- Managing sessions
+- Processing uploaded files
+- Working with AI APIs
+- Sending verification emails
+- Designing database relationships
+- Handling asynchronous requests
+- Building responsive layouts
+- Debugging frontend/backend integration
+The project also provided experience thinking about software from the perspective of the user rather than only the implementation.
+# Author
+Selina Ho
+- Monotask was created as a personal full-stack web development project focused on combining web development, artificial intelligence, and student productivity.
+# License
+This project is currently intended as a personal/portfolio project.
+A formal open-source license may be added in the future.
