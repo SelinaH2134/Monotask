@@ -8,6 +8,7 @@
     --red-pink: #e84860;
     --background: #F8FAFC;
     --card: #FFFFFF;
+    --white: #FFFFFF;
     --border: #E2E8F0;
     --text: #1E293B;
     --muted: #64748B;
@@ -165,6 +166,288 @@ a {
     font-size: 1rem;
 }
 
+/* Menu */
+.profile-menu {
+    position: relative;
+}
+
+.profile-menu-button {
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 6px;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-menu-button:hover {
+    color: var(--sky-blue);
+    transform: scale(1.05);
+    border-radius: 50px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Profile */
+.profile-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.profile-modal.show {
+    display: flex;
+}
+
+.profile-modal-content {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.profile-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.profile-modal-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.profile-modal-header button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: #F1F5F9;
+    color: var(--text);
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.profile-modal-header button:hover {
+    color: var(--sky-blue);
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.profile-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.profile-info span {
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+.profile-info strong {
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.profile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.profile-form-group label {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.profile-form-group input,
+.profile-form-group select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.profile-form-group input:focus,
+.profile-form-group select:focus {
+    outline: 2px solid var(--sky-blue);
+    outline-offset: 1px;
+    border-color: var(--sky-blue);
+}
+
+.profile-form-group select {
+    cursor: pointer;
+}
+
+.profile-save-button {
+    width: 100%;
+    margin-top: 2px;
+}
+
+.profile-password-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+}
+
+.profile-password-section h3 {
+    margin: 0 0 5px;
+    font-size: 1rem;
+}
+
+.profile-password-section p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.profile-password-section .secondary-button {
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .profile-password-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .profile-password-section .secondary-button {
+        width: 100%;
+    }
+}
+
+/* LogOut */
+.profile-dropdown button + button {
+    margin-top: 0;
+}
+
+.profile-dropdown {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.profile-dropdown.show {
+    display: flex;
+}
+
+.profile-dropdown button {
+    display: block;
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 0;
+    color: #e8edf5;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+}
+
+.profile-dropdown button::before {
+    content: "↪";
+    margin-right: 8px;
+    font-size: 1rem;
+}
+
+.profile-dropdown button:hover {
+    color: var(--sky-blue);
+}
+
+.user-profile.profile-open > div:first-child {
+    display: none;
+}
+
+.user-profile.profile-open .profile-menu-button {
+    display: none;
+}
+
+.user-profile.profile-open .profile-menu {
+    flex: 1;
+}
+
+.user-profile.profile-open .profile-dropdown {
+    display: block;
+}
+
+/* Incorrect Password */
+.password-error {
+    margin: 6px 0 0;
+    color: var(--red-pink);
+    font-size: 0.875rem;
+    display: none;
+}
+
+/* Delete an Account */
+.profile-danger-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.profile-danger-section h3 {
+    margin: 0 0 4px;
+    color: var(--red-pink);
+}
+
+.profile-danger-section p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.danger-button {
+    margin-top: 16px;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--red-pink);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--red-pink);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.danger-button:hover {
+    background: var(--red-pink);
+    color: white;
+}
+
+/* Back to the Menu */
+.profile-dropdown #backProfileButton::before {
+    content: none;
+    margin: 0;
+}
 
 /* Main Dashboard */
 .dashboard {
@@ -779,7 +1062,7 @@ a {
     height: 36px;
     border: none;
     border-radius: 50%;
-    background: var(--light-blue);
+    background: #F1F5F9;
     color: var(--text);
     font-size: 1.1rem;
     cursor: pointer;
@@ -1357,6 +1640,148 @@ a {
     padding: 10px 18px;
 }
 
+/* Authentication Pages */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--background);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+    padding: 40px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-logo {
+    display: inline-block;
+    margin-bottom: 28px;
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-header h1 {
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.auth-card .form-group {
+    margin-bottom: 18px;
+}
+
+.auth-card label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.auth-card input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--text);
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.auth-card input:focus {
+    outline: 2px solid var(--sky-blue);
+    outline-offset: 1px;
+}
+
+.auth-button {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.auth-switch {
+    margin-top: 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.auth-switch a {
+    color: var(--sky-blue);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+.auth-card select {
+    width: 100%;
+    padding: 12px 42px 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+        linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position:
+        calc(100% - 18px) 50%,
+        calc(100% - 12px) 50%;
+    background-size:
+        6px 6px,
+        6px 6px;
+    background-repeat: no-repeat;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-card select:hover {
+    border-color: #CBD5E1;
+}
+
+.auth-card select:focus {
+    outline: none;
+    border-color: var(--sky-blue);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+.auth-card select:invalid {
+    color: var(--muted);
+}
+
+@media (max-width: 500px) {
+    .auth-page {
+        padding: 16px;
+    }
+
+    .auth-card {
+        padding: 28px 22px;
+    }
+}
+
 
 /* =============================================
             Responsive Web
@@ -1516,8 +1941,87 @@ a {
     }
 }
 
-
 /* Mobile */
+@media (max-width: 768px) {
+
+    .profile-modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .profile-modal-content {
+        width: 100%;
+        max-width: none;
+        max-height: 92vh;
+        overflow-y: auto;
+        padding: 24px 20px;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .profile-modal-header {
+        margin-bottom: 22px;
+    }
+
+    .profile-modal-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .profile-modal-header button {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+
+    .profile-form-group {
+        margin-bottom: 16px;
+    }
+
+    .profile-form-group input,
+    .profile-form-group select {
+        min-height: 44px;
+        padding: 11px 12px;
+        font-size: 16px;
+    }
+
+    .profile-save-button {
+        min-height: 44px;
+    }
+
+    .profile-password-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        margin-top: 24px;
+        padding-top: 20px;
+    }
+
+    .profile-password-section .secondary-button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .profile-danger-section {
+        margin-top: 22px;
+        padding-top: 20px;
+    }
+
+    .danger-button {
+        min-height: 44px;
+        margin-top: 14px;
+    }
+
+    #deleteAccountModal .modal-actions {
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+
+    #deleteAccountModal .modal-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
+}
+
+/* Smaller Mobile */
 @media (max-width: 650px) {
 
     /* Change sidebar into top navigation */
@@ -1571,7 +2075,56 @@ a {
 
     /* Hide desktop sidebar content */
     .sidebar-bottom {
-        display: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    /* Mobile top navigation */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 12px 16px;
+    }
+
+    .sidebar-top {
+        width: 100%;
+    }
+
+    /* Keep the navigation links in the top bar */
+    .sidebar-nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    /* Keep streak + profile visible */
+    .sidebar-bottom {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    /* Streak card becomes compact */
+    .streak-card {
+        flex: 1;
+        margin: 0;
+    }
+
+    /* User profile takes the remaining space */
+    .user-profile {
+        flex: 1;
+        min-width: 0;
     }
 
 
@@ -1770,6 +2323,107 @@ a {
         line-height: 1.2;
         overflow-wrap: anywhere;
     }
+
+    .profile-modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .profile-modal-content {
+        width: 100%;
+        max-width: none;
+        max-height: 92vh;
+        overflow-y: auto;
+        padding: 24px 20px;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .profile-modal-header {
+        margin-bottom: 22px;
+    }
+
+    .profile-modal-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .profile-modal-header button {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+
+    .profile-form-group {
+        margin-bottom: 16px;
+    }
+
+    .profile-form-group label {
+        font-size: 0.8rem;
+    }
+
+    .profile-form-group input,
+    .profile-form-group select {
+        min-height: 44px;
+        padding: 11px 12px;
+        font-size: 16px;
+    }
+
+    .profile-save-button {
+        min-height: 44px;
+    }
+
+    /* Password section */
+    .profile-password-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        margin-top: 24px;
+        padding-top: 20px;
+    }
+
+    .profile-password-section .secondary-button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    /* Delete account section */
+    .profile-danger-section {
+        margin-top: 22px;
+        padding-top: 20px;
+    }
+
+    .profile-danger-section h3 {
+        font-size: 0.95rem;
+    }
+
+    .profile-danger-section p {
+        font-size: 0.78rem;
+        line-height: 1.5;
+    }
+
+    .danger-button {
+        min-height: 44px;
+        margin-top: 14px;
+    }
+
+    /* Change Password Modal */
+    #changePasswordModal .profile-modal-content {
+        padding: 24px 20px;
+    }
+
+    /* Delete Account Confirmation */
+    #deleteAccountModal .profile-modal-content {
+        padding: 24px 20px;
+    }
+
+    #deleteAccountModal .modal-actions {
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+
+    #deleteAccountModal .modal-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
 }
 
 
@@ -1806,6 +2460,48 @@ a {
     }
 
     .task-list-info h3 {
+        font-size: 0.75rem;
+    }
+
+    .profile-modal-content {
+        padding: 22px 16px;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .profile-modal-header {
+        margin-bottom: 20px;
+    }
+
+    .profile-modal-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .profile-modal-header button {
+        width: 34px;
+        height: 34px;
+    }
+
+    .profile-form-group {
+        gap: 5px;
+        margin-bottom: 14px;
+    }
+
+    .profile-form-group input,
+    .profile-form-group select {
+        min-height: 44px;
+    }
+
+    .profile-password-section {
+        margin-top: 20px;
+        padding-top: 18px;
+    }
+
+    .profile-danger-section {
+        margin-top: 20px;
+        padding-top: 18px;
+    }
+
+    .profile-danger-section p {
         font-size: 0.75rem;
     }
 }

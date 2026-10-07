@@ -43,17 +43,30 @@
 
 
                     <!-- User Profile -->
-                    <div class="user-profile">
-
+                    <div class="user-profile" id="userProfile">
                         <div>
-                            <p class="user-name">Student</p>
-                            <p class="user-role">College Student</p>
+                            <p class="user-name" id="sidebarUserName">Student</p>
+                            <p class="user-role" id="sidebarUserRole">College Student</p>
                         </div>
 
-                        <button type="button" class="profile-menu-button">...</button>
+                        <div class="profile-menu">
+                            <button
+                                type="button"
+                                class="profile-menu-button"
+                                id="profileMenuButton"
+                            >
+                                ...
+                            </button>
 
+                            <div class="profile-dropdown" id="profileDropdown">
+                                <button type="button" id="profileButton">Profile</button>
+
+                                <button type="button" id="logoutButton">Log out</button>
+
+                                <button type="button" id="backProfileButton">← Back</button>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
 
             </aside>
@@ -214,6 +227,292 @@
                 <div class="description-modal-content">
                     <p id="fullDescription"></p>
                 </div>
+            </div>
+        </div>
+
+        <!-- Profile -->
+        <div class="profile-modal" id="profileModal">
+            <div class="profile-modal-content">
+
+                <!-- Profile Header -->
+                <div class="profile-modal-header">
+                    <h2>Profile</h2>
+
+                    <button
+                        type="button"
+                        id="closeProfileModal"
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <!-- Profile Form -->
+                <form id="profileForm">
+
+                    <!-- Name -->
+                    <div class="profile-form-group">
+                        <label for="profileNameInput">Name</label>
+
+                        <input
+                            type="text"
+                            id="profileNameInput"
+                            name="name"
+                            required
+                        >
+                    </div>
+
+                    <!-- Email -->
+                    <div class="profile-form-group">
+                        <label for="profileEmailInput">Email</label>
+
+                        <input
+                            type="email"
+                            id="profileEmailInput"
+                            name="email"
+                            required
+                        >
+                    </div>
+
+                    <!-- School Level -->
+                    <div class="profile-form-group">
+                        <label for="profileSchoolLevelInput">School level</label>
+
+                        <select
+                            id="profileSchoolLevelInput"
+                            name="schoolLevel"
+                            required
+                        >
+                            <option value="Middle School Student">
+                                Middle School Student
+                            </option>
+
+                            <option value="High School Student">
+                                High School Student
+                            </option>
+
+                            <option value="College Student">
+                                College Student
+                            </option>
+
+                            <option value="Graduate Student">
+                                Graduate Student
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Save Profile -->
+                    <button
+                        type="submit"
+                        class="primary-button profile-save-button"
+                    >
+                        Save changes
+                    </button>
+
+                </form>
+
+                <!-- Password Section -->
+                <div class="profile-password-section">
+
+                    <div>
+                        <h3>Password</h3>
+                        <p>
+                            Change your password securely using email verification.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="changePasswordButton"
+                    >
+                        Change password
+                    </button>
+
+                </div>
+
+                <!-- Delete Account Section -->
+                <div class="profile-danger-section">
+
+                    <div>
+                        <h3>Delete account</h3>
+                        <p>
+                            Permanently delete your account and all of your assignments.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="danger-button"
+                        id="deleteAccountButton"
+                    >
+                        Delete account
+                    </button>
+
+                </div>
+
+            </div>
+            
+        </div>
+
+        <!-- Delete Account Confirmation Modal -->
+        <div class="profile-modal" id="deleteAccountModal">
+            <div class="profile-modal-content">
+
+                <div class="profile-modal-header">
+                    <h2>Delete account?</h2>
+
+                    <button
+                        type="button"
+                        id="closeDeleteAccountModal"
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <p>
+                    This will permanently delete your account and all of your assignments.
+                    This action cannot be undone.
+                </p>
+
+                <div class="modal-actions">
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="cancelDeleteAccount"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        class="danger-button"
+                        id="confirmDeleteAccount"
+                    >
+                        Delete my account
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div class="profile-modal" id="changePasswordModal">
+            <div class="profile-modal-content">
+
+                <div class="profile-modal-header">
+                    <h2>Change password</h2>
+
+                    <button
+                        type="button"
+                        id="closeChangePasswordModal"
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+                </div>
+
+
+                <!-- Step 1: Check passwords -->
+                <div id="passwordStepCurrent">
+
+                    <form id="changePasswordForm">
+
+                        <div class="profile-form-group">
+                            <label for="currentPasswordInput">
+                                Current password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="currentPasswordInput"
+                                name="currentPassword"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="profile-form-group">
+                            <label for="newPasswordInput">
+                                New password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="newPasswordInput"
+                                name="newPassword"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="profile-form-group">
+                            <label for="confirmPasswordInput">
+                                Confirm new password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="confirmPasswordInput"
+                                name="confirmPassword"
+                                required
+                            >
+
+                            <p id="confirmPasswordError" class="password-error"></p>
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="primary-button profile-save-button"
+                        >
+                            Continue
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- Step 2: Verification code -->
+                <div id="passwordStepCode" style="display: none;">
+
+                    <form id="verificationCodeForm">
+
+                        <div class="profile-form-group">
+
+                            <label for="verificationCodeInput">
+                                Verification code
+                            </label>
+
+                            <input
+                                type="text"
+                                id="verificationCodeInput"
+                                name="verificationCode"
+                                inputmode="numeric"
+                                maxlength="6"
+                                required
+                            >
+
+                            <p>
+                                We sent a verification code to your email.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="primary-button profile-save-button"
+                        >
+                            Verify code
+                        </button>
+
+                    </form>
+
+                </div>
+
             </div>
         </div>
 

@@ -19,11 +19,15 @@
   },
   "homepage": "https://github.com/SelinaH2134/Monotask#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^13.0.3",
     "cors": "^2.8.6",
     "dotenv": "^18.0.3",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "mammoth": "^1.13.0",
     "multer": "^2.4.0",
+    "nodemailer": "^10.0.15",
     "openai": "^7.22.0",
     "pdf-parse": "^2.4.5",
     "pptx2json": "^0.0.10"

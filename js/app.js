@@ -6,59 +6,571 @@ let streakStartDate = null;
 
 let calendarDate = new Date();
 
+// Assignments
 const addAssignmentButton = document.getElementById("addAssignmentButton");
-
 const assignmentModal = document.getElementById("assignmentModal");
-
 const closeAssignmentModal = document.getElementById("closeAssignmentModal");
-
 const cancelAssignment = document.getElementById("cancelAssignment");
-
 const assignmentForm = document.getElementById("assignmentForm");
 
+// Plan List Items
 const taskList = document.getElementById("taskList");
-
 const assignmentList = document.getElementById("assignmentList");
-
 const planList = document.getElementById("planList");
 
+// Progress 
 const dailyProgressText = document.getElementById("dailyProgressText");
-
 const dailyProgressBar = document.getElementById("dailyProgressBar");
-
 const dailyProgressPercent = document.getElementById("dailyProgressPercent");
-
 const weeklyProgress = document.getElementById("weeklyProgress");
 
+// Plans
 const sessionsPlanned = document.getElementById("sessionsPlanned");
 
+// Task Description and Button
 const finishNextTask = document.getElementById("finishNextTask");
-
 const skipNextTask = document.getElementById("skipNextTask");
-
 const nextTaskTitle = document.getElementById("nextTaskTitle");
-
 const nextTaskCourse = document.getElementById("nextTaskCourse");
-
 const nextTaskDue = document.getElementById("nextTaskDue");
 
+// AI Explanation
 const whyTaskText = document.getElementById("whyTaskText");
 
+// Description
 const nextTaskDescription = document.getElementById("nextTaskDescription");
-
 const descriptionModal = document.getElementById("descriptionModal");
-
 const closeDescriptionModal = document.getElementById("closeDescriptionModal");
-
 const fullDescription = document.getElementById("fullDescription");
 
+//Add Assignment
 const addAssignmentSubmit = document.getElementById("addAssignmentSubmit");
 
+// AI Analyzing
 const aiAnalyzingMessage = document.getElementById("aiAnalyzingMessage");
+
+// Menu
+const profileMenuButton = document.getElementById("profileMenuButton");
+const profileDropdown = document.getElementById("profileDropdown");
+
+// Logout 
+const logoutButton = document.getElementById("logoutButton");
+const userProfile = document.getElementById("userProfile");
+
+// Profile 
+const profileButton = document.getElementById("profileButton");
+const profileModal = document.getElementById("profileModal");
+const closeProfileModal = document.getElementById("closeProfileModal");
+
+// Back to the menu 
+const backProfileButton = document.getElementById("backProfileButton");
+
+// Delete the Account
+const deleteAccountButton = document.getElementById("deleteAccountButton");
+const deleteAccountModal = document.getElementById("deleteAccountModal");
+const closeDeleteAccountModal = document.getElementById("closeDeleteAccountModal");
+const cancelDeleteAccount = document.getElementById("cancelDeleteAccount");
+const confirmDeleteAccount = document.getElementById("confirmDeleteAccount");
+
+// Delete Account Button
+if (deleteAccountButton) {
+
+    deleteAccountButton.addEventListener("click", function () {
+        deleteAccountModal.style.display = "flex";
+    });
+
+}
+
+
+if (closeDeleteAccountModal) {
+
+    closeDeleteAccountModal.addEventListener("click", function () {
+        deleteAccountModal.style.display = "none";
+    });
+
+}
+
+
+if (cancelDeleteAccount) {
+
+    cancelDeleteAccount.addEventListener("click", function () {
+        deleteAccountModal.style.display = "none";
+    });
+
+}
+
+
+if (confirmDeleteAccount) {
+
+    confirmDeleteAccount.addEventListener("click", async function () {
+
+        confirmDeleteAccount.disabled = true;
+        confirmDeleteAccount.textContent = "Deleting...";
+
+        try {
+
+            const response = await fetch(
+                "http://localhost:3000/api/account",
+                {
+                    method: "DELETE",
+                    credentials: "include"
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Unable to delete account."
+                );
+            }
+
+            window.location.href = "login.html";
+
+        } catch (error) {
+
+            console.error("Delete account error:", error);
+
+            alert(error.message);
+
+            confirmDeleteAccount.disabled = false;
+            confirmDeleteAccount.textContent = "Delete my account";
+        }
+
+    });
+
+}
+
+// Profile
+if (profileButton && profileModal) {
+    profileButton.addEventListener("click", async function () {
+        const user = await loadCurrentUser();
+
+        if (!user) {
+            return;
+        }
+
+        const profileNameInput = document.getElementById("profileNameInput");
+        const profileEmailInput = document.getElementById("profileEmailInput");
+
+        if (profileNameInput) {
+            profileNameInput.value = user.name;
+        }
+
+        if (profileEmailInput) {
+            profileEmailInput.value = user.email;
+        }
+
+        const profileSchoolLevelInput = document.getElementById("profileSchoolLevelInput");
+
+        if (profileSchoolLevelInput) {
+            profileSchoolLevelInput.value = user.schoolLevel || "College Student";
+        }
+
+        profileModal.classList.add("show");
+
+        profileDropdown.classList.remove("show");
+        userProfile.classList.remove("profile-open");
+    });
+}
+
+// Save Profile Changes
+const profileForm = document.getElementById("profileForm");
+
+if (profileForm) {
+    profileForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const profileNameInput = document.getElementById("profileNameInput");
+        const profileEmailInput = document.getElementById("profileEmailInput");
+        const profileSchoolLevelInput = document.getElementById("profileSchoolLevelInput");
+
+        const name = profileNameInput.value.trim();
+        const email = profileEmailInput.value.trim();
+        const schoolLevel = profileSchoolLevelInput.value;
+
+        if (!name || !email || !schoolLevel) {
+            alert("Please complete all profile fields.");
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/profile", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    schoolLevel: schoolLevel
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.message || "Could not update your profile.");
+                return;
+            }
+
+            // Update the sidebar immediately
+            const sidebarUserName = document.getElementById("sidebarUserName");
+            const sidebarUserRole = document.getElementById("sidebarUserRole");
+
+            if (sidebarUserName) {
+                sidebarUserName.textContent = name;
+            }
+
+            if (sidebarUserRole) {
+                sidebarUserRole.textContent = schoolLevel;
+            }
+
+            alert("Profile updated successfully.");
+
+        } catch (error) {
+            console.error("Could not update profile:", error);
+            alert("Something went wrong while updating your profile.");
+        }
+    });
+}
+
+/* Change Password */
+const changePasswordButton = document.getElementById("changePasswordButton");
+const changePasswordModal = document.getElementById("changePasswordModal");
+const closeChangePasswordModal = document.getElementById("closeChangePasswordModal");
+const changePasswordForm = document.getElementById("changePasswordForm");
+const verificationCodeForm = document.getElementById("verificationCodeForm");
+const passwordStepCurrent = document.getElementById("passwordStepCurrent");
+const passwordStepCode = document.getElementById("passwordStepCode");
+
+
+/* Open change-password modal */
+if (changePasswordButton && changePasswordModal) {
+
+    changePasswordButton.addEventListener("click", function () {
+
+        changePasswordModal.classList.add("show");
+
+    });
+
+}
+
+
+/* Close change-password modal */
+if (closeChangePasswordModal && changePasswordModal) {
+
+    closeChangePasswordModal.addEventListener("click", function () {
+
+        changePasswordModal.classList.remove("show");
+
+    });
+
+}
+
+
+/* Step 1: Check current password and make sure the new passwords match */
+if (changePasswordForm) {
+
+    changePasswordForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const currentPassword =
+                document.getElementById(
+                    "currentPasswordInput"
+                ).value;
+
+            const newPassword =
+                document.getElementById(
+                    "newPasswordInput"
+                ).value;
+
+            const confirmPassword =
+                document.getElementById(
+                    "confirmPasswordInput"
+                ).value;
+
+
+            /* Check that new passwords match */
+            const confirmPasswordError = document.getElementById("confirmPasswordError");
+
+            if (newPassword !== confirmPassword) {
+                confirmPasswordError.textContent = "Passwords do not match.";
+                confirmPasswordError.style.display = "block";
+                return;
+            }
+
+            confirmPasswordError.textContent = "";
+            confirmPasswordError.style.display = "none";
+
+
+            /* Check that the new password is long enough */
+            if (newPassword.length < 8) {
+
+                alert(
+                    "Your new password must be at least 8 characters."
+                );
+
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    "/api/change-password/verify",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            currentPassword: currentPassword,
+                            newPassword: newPassword,
+                            confirmPassword: confirmPassword
+                        })
+                    }
+                );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        result.message ||
+                        "Could not verify your password."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * Everything passed.
+                 *
+                 * Move to verification-code screen.
+                 */
+
+                passwordStepCurrent.style.display =
+                    "none";
+
+                passwordStepCode.style.display =
+                    "block";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Password verification failed:",
+                    error
+                );
+
+                alert(
+                    "Something went wrong. Please try again."
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* Step 2: Verify the email code */
+if (verificationCodeForm) {
+
+    verificationCodeForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const verificationCode =
+                document.getElementById(
+                    "verificationCodeInput"
+                ).value.trim();
+
+
+            if (!verificationCode) {
+
+                alert(
+                    "Please enter the verification code."
+                );
+
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    "/api/change-password/confirm-code",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            code: verificationCode
+                        })
+                    }
+                );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        result.message ||
+                        "The verification code is incorrect."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                * The verification code is correct.
+                * Now actually update the password.
+                */
+
+                const newPassword =
+                    document.getElementById(
+                        "newPasswordInput"
+                    ).value;
+
+                const updateResponse = await fetch(
+                    "/api/change-password/update",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            newPassword: newPassword
+                        })
+                    }
+                );
+
+                const updateResult =
+                    await updateResponse.json();
+
+
+                if (!updateResponse.ok) {
+
+                    alert(
+                        updateResult.message ||
+                        "Could not change your password."
+                    );
+
+                    return;
+                }
+
+
+                alert(
+                    "Your password has been changed successfully."
+                );
+
+
+                /* Close modal */
+                changePasswordModal.classList.remove(
+                    "show"
+                );
+
+
+                /* Reset everything */
+                changePasswordForm.reset();
+
+                verificationCodeForm.reset();
+
+                passwordStepCurrent.style.display =
+                    "block";
+
+                passwordStepCode.style.display =
+                    "none";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Verification code failed:",
+                    error
+                );
+
+                alert(
+                    "Something went wrong. Please try again."
+                );
+
+            }
+
+        }
+    );
+
+}
+
+if (closeProfileModal && profileModal) {
+    closeProfileModal.addEventListener("click", function () {
+        profileModal.classList.remove("show");
+    });
+}
+
+// Menu button
+if (profileMenuButton && profileDropdown && userProfile) {
+    profileMenuButton.addEventListener("click", function () {
+        userProfile.classList.toggle("profile-open");
+        profileDropdown.classList.toggle("show");
+    });
+}
+
+// Logout Button
+if (logoutButton) {
+    logoutButton.addEventListener("click", async function () {
+        try {
+            const response = await fetch("/api/logout", {
+                method: "POST"
+            });
+
+            if (!response.ok) {
+                console.error("Could not log out.");
+                return;
+            }
+
+            window.location.href = "login.html";
+        } catch (error) {
+            console.error("Could not log out:", error);
+        }
+    });
+}
+
+// Back to the menu button
+if (backProfileButton && profileDropdown && userProfile) {
+    backProfileButton.addEventListener("click", function () {
+        profileDropdown.classList.remove("show");
+        userProfile.classList.remove("profile-open");
+    });
+}
 
 // Finish assignment
 if (finishNextTask) {
-    finishNextTask.addEventListener("click", function () {
+    finishNextTask.addEventListener("click", async function () {
         const nextTask = nextTaskQueue[0];
 
         if (!nextTask) {
@@ -67,12 +579,13 @@ if (finishNextTask) {
 
         nextTask.completed = true;
         nextTask.completedAt = new Date().toISOString();
+        await updateAssignmentInAccount(nextTask);
 
         const today = getTodayDateString();
 
         if (!streakStartDate && nextTask.dueDate <= today) {
             streakStartDate = today;
-            saveStreakStartDate();
+            await updateStreakInAccount();
         }
         
 
@@ -81,7 +594,6 @@ if (finishNextTask) {
             return assignment.id !== nextTask.id;
         });
 
-        saveAssignments();
         sortAssignments();
         updateGlance();
         updateGentlePlan();
@@ -106,21 +618,33 @@ if (skipNextTask) {
     });
 }
 
-// Load Saved Assignments
-const savedAssignments = localStorage.getItem("monotaskAssignments");
+// Load Assignments From Account
+async function loadAssignmentsFromAccount() {
+    try {
+        const response = await fetch("/api/assignments");
 
-if (savedAssignments) {
+        if (!response.ok) {
+            console.error("Could not load assignments from account.");
+            return;
+        }
 
-    assignments = JSON.parse(savedAssignments);
-    sortAssignments();
+        assignments = await response.json();
 
+        sortAssignments();
+        updateGlance();
+        updateGentlePlan();
+        updateNextTask();
+        updateDailyProgress();
+        updateStreak();
+        updateMyPlan();
+        updateCalendar();
+
+    } catch (error) {
+        console.error("Could not load assignments from account:", error);
+    }
 }
 
-const savedStreakStartDate = localStorage.getItem("monotaskStreakStartDate");
-
-if (savedStreakStartDate) {
-    streakStartDate = savedStreakStartDate;
-}
+loadAssignmentsFromAccount();
 
 // Open Modal
 if (addAssignmentButton && assignmentModal) {
@@ -224,7 +748,7 @@ if (assignmentForm) {
         // Add assignment to array
         assignments.push(assignment);
 
-        saveAssignments();
+        await saveAssignmentToAccount(assignment);
 
         // Sort and display assignment
         sortAssignments();
@@ -336,7 +860,7 @@ function addAssignmentToListWithoutSorting(assignment) {
     // Checkbox
     const checkbox = taskItem.querySelector(".task-checkbox");
 
-    checkbox.addEventListener("change", function () {
+    checkbox.addEventListener("change", async function () {
 
         assignment.completed = checkbox.checked;
 
@@ -348,7 +872,7 @@ function addAssignmentToListWithoutSorting(assignment) {
             // Only start a streak for an assignment due today or earlier.
             if (!streakStartDate && assignment.dueDate <= today) {
                 streakStartDate = today;
-                saveStreakStartDate();
+                await updateStreakInAccount();
             }
         } 
 
@@ -361,16 +885,17 @@ function addAssignmentToListWithoutSorting(assignment) {
             // or is already past due.
             if (assignment.dueDate <= today) {
                 streakStartDate = null;
-                saveStreakStartDate();
+                await updateStreakInAccount();
             }
         }
+
+        await updateAssignmentInAccount(assignment);
 
         taskItem.classList.toggle(
             "completed",
             assignment.completed
         );
 
-        saveAssignments();
         sortAssignments();
         updateGlance();
         updateGentlePlan();
@@ -402,21 +927,26 @@ function formatDueDate(dateString) {
 
 }
 
-/* Save Assignments Function */
-function saveAssignments() {
+async function saveAssignmentToAccount(assignment) {
+    try {
+        const response = await fetch("/api/assignments", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(assignment)
+        });
 
-    localStorage.setItem("monotaskAssignments", JSON.stringify(assignments));
+        if (!response.ok) {
+            console.error("Could not save assignment to account.");
+            return false;
+        }
 
-}
+        return true;
 
-/* Save Streak Function */
-function saveStreakStartDate() {
-    if (streakStartDate) {
-        localStorage.setItem("monotaskStreakStartDate", streakStartDate);
-    } 
-    
-    else {
-        localStorage.removeItem("monotaskStreakStartDate");
+    } catch (error) {
+        console.error("Could not save assignment to account:", error);
+        return false;
     }
 }
 
@@ -870,95 +1400,126 @@ function updateGreeting() {
 /* Update Streak Function */
 function updateStreak() {
     const currentStreakElement = document.getElementById("currentStreak");
+
     const streakMessageElement = document.getElementById("streakMessage");
+
+    if (!currentStreakElement || !streakMessageElement) {
+        return;
+    }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // If the user has never completed an assignment, the streak has not started
+    const todayString = getTodayDateString();
+
+    /* A new account starts with a 1-day streak. */
     if (!streakStartDate) {
-        currentStreakElement.textContent = "0 Day";
-        streakMessageElement.textContent = "Start your streak!";
+        streakStartDate = todayString;
+
+        currentStreakElement.textContent = "1 Day";
+        streakMessageElement.textContent = "Keep it going!";
+
+        updateStreakInAccount();
         return;
     }
 
+    /* Check each day from the streak start date through today. */
     const startDate = new Date(
         streakStartDate + "T00:00:00"
     );
 
+    let currentDate = new Date(startDate);
     let streak = 0;
-
-    // Check each calendar day starting from the streak start date
-    const currentDate = new Date(startDate);
+    let lastSuccessfulDate = null;
 
     while (currentDate <= today) {
-        const dateString = getDateString(currentDate);
 
-        // Find assignments that were due on this day.
-        // Past-due assignments are still kept in the assignments array,
-        // so they can be used for streak history.
-        const daysAssignments = assignments.filter(function (assignment) {
-            return assignment.dueDate === dateString;
-        });
+        const dateString =
+            getDateString(currentDate);
 
-        // Future due dates should not affect the current streak yet.
-        if (currentDate > today) {
-            currentDate.setDate(currentDate.getDate() + 1);
-            continue;
-        }
+        /* Find assignments due on this day. */
+        const daysAssignments =
+            assignments.filter(function (assignment) {
+                return assignment.dueDate === dateString;
+            });
 
-        // If there were no assignments on this day,
-        // the day counts as successful once the streak has started.
+        /* A day with no assignments counts as a successful streak day. */
         if (daysAssignments.length === 0) {
+
             streak++;
-            currentDate.setDate(currentDate.getDate() + 1);
-            continue;
+
+            lastSuccessfulDate = dateString;
+
+        } else {
+
+            /* Every assignment due that day must have been completed on or before its due date. */
+            const dayWasSuccessful =
+                daysAssignments.every(function (assignment) {
+
+                    if (!assignment.completed) {
+                        return false;
+                    }
+
+                    if (!assignment.completedAt) {
+                        return false;
+                    }
+
+                    const completedDate =
+                        new Date(assignment.completedAt);
+
+                    completedDate.setHours(0, 0, 0, 0);
+
+                    const dueDate =
+                        new Date(
+                            assignment.dueDate +
+                            "T00:00:00"
+                        );
+
+                    return completedDate <= dueDate;
+                });
+
+            if (dayWasSuccessful) {
+
+                streak++;
+
+                lastSuccessfulDate = dateString;
+
+            } else {
+
+                /* The streak was broken.
+                 * Start a brand-new streak today.
+                 */
+                if (dateString !== todayString) {
+
+                    streak = 1;
+
+                    streakStartDate = todayString;
+
+                }
+
+                break;
+            }
         }
 
-        // Every assignment due that day must have been completed
-        // on or before its due date.
-        const dayWasSuccessful = daysAssignments.every(function (assignment) {
+        currentDate.setDate(
+            currentDate.getDate() + 1
+        );
+    }
 
-            if (!assignment.completed) {
-                return false;
-            }
-
-            if (!assignment.completedAt) {
-                return false;
-            }
-
-            const completedDate = new Date(assignment.completedAt);
-            completedDate.setHours(0, 0, 0, 0);
-
-            const dueDate = new Date(
-                assignment.dueDate + "T00:00:00"
-            );
-
-            return completedDate <= dueDate;
-        });
-
-        if (dayWasSuccessful) {
-            streak++;
-        } 
-        
-        else {
-            // This day failed, so the streak ends here.
-            streak = 0;
-        }
-
-        currentDate.setDate(currentDate.getDate() + 1);
+    /* Make sure the current streak is never displayed as 0. */
+    if (streak < 1) {
+        streak = 1;
+        streakStartDate = todayString;
     }
 
     currentStreakElement.textContent =
         `${streak} ${streak === 1 ? "Day" : "Days"}`;
 
-    if (streak === 0) {
-        streakMessageElement.textContent = "You missed an assignment :(";
-    } 
-    
-    else {
-        streakMessageElement.textContent = "Keep it going!";
-    }
+    streakMessageElement.textContent =
+        "Keep it going!";
+
+    /* Save the new streak start date. */
+    updateStreakInAccount();
 }
 
 /* Get Date String Function */
@@ -1173,63 +1734,57 @@ function updateMyPlan() {
 
 /* Mark Streak Label on the Calendar Function */
 function isStreakDay(dateString) {
-    const targetDate = new Date(dateString + "T00:00:00");
-    const today = new Date();
 
-    targetDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-
-    // Future dates cannot be streak days.
-    if (targetDate > today) {
+    if (!streakStartDate) {
         return false;
     }
 
-    let checkDate = new Date(today);
-    let streakStart = null;
+    const todayString = getTodayDateString();
 
-    while (checkDate >= targetDate) {
-        const checkDateString =
-            checkDate.getFullYear() +
-            "-" +
-            String(checkDate.getMonth() + 1).padStart(2, "0") +
-            "-" +
-            String(checkDate.getDate()).padStart(2, "0");
-
-        const dayAssignments = assignments.filter(function (assignment) {
-            return assignment.dueDate === checkDateString;
-        });
-
-        // Days with no assignments only count AFTER the streak has started.
-        if (dayAssignments.length === 0) {
-            if (streakStart !== null) {
-                checkDate.setDate(checkDate.getDate() - 1);
-                continue;
-            }
-
-            checkDate.setDate(checkDate.getDate() - 1);
-            continue;
-        }
-
-        const successfulDay = dayAssignments.every(function (assignment) {
-            return assignment.completed === true;
-        });
-
-        if (!successfulDay) {
-            break;
-        }
-
-        // This is a successful assignment day.
-        streakStart = new Date(checkDate);
-
-        checkDate.setDate(checkDate.getDate() - 1);
-    }
-
-    // No successful day means the streak has not started.
-    if (streakStart === null) {
+    /* Never show a streak fire in the future. */
+    if (dateString > todayString) {
         return false;
     }
 
-    return targetDate >= streakStart && targetDate <= today;
+    /* The current streak only exists from streakStartDate through today. */
+    if (dateString < streakStartDate) {
+        return false;
+    }
+
+    /* Check the assignments due on this day. */
+    const daysAssignments =
+        assignments.filter(function (assignment) {
+            return assignment.dueDate === dateString;
+        });
+
+    /* No assignments = successful streak day. */
+    if (daysAssignments.length === 0) {
+        return true;
+    }
+
+    /* Every assignment must have been completed on time. */
+    return daysAssignments.every(function (assignment) {
+
+        if (!assignment.completed) {
+            return false;
+        }
+
+        if (!assignment.completedAt) {
+            return false;
+        }
+
+        const completedDate = new Date(assignment.completedAt);
+
+        completedDate.setHours(0, 0, 0, 0);
+
+        const dueDate =
+            new Date(
+                assignment.dueDate +
+                "T00:00:00"
+            );
+
+        return completedDate <= dueDate;
+    });
 }
 
 /* My Plan Calendar */
@@ -1449,6 +2004,235 @@ if (nextMonth) {
     });
 }
 
+/* SignUp */
+const signupForm = document.getElementById("signupForm");
+
+if (signupForm) {
+    signupForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById("signupName").value.trim();
+        const email = document.getElementById("signupEmail").value.trim();
+        const password = document.getElementById("signupPassword").value;
+        const schoolLevel = document.getElementById("signupSchoolLevel").value;
+
+        try {
+            const response = await fetch("/api/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    schoolLevel: schoolLevel
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.message);
+                return;
+            }
+
+            alert("Account created successfully!");
+
+            window.location.href = "login.html";
+
+        } catch (error) {
+            console.error("Signup failed:", error);
+
+            alert("Could not create your account. Please try again.");
+        }
+    });
+}
+
+/* LogIn */
+const loginForm = document.getElementById("loginForm");
+
+if (loginForm) {
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+
+        try {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.message);
+                return;
+            }
+
+            alert("Login successful!");
+
+            window.location.href = "index.html";
+
+        } catch (error) {
+            console.error("Login failed:", error);
+
+            alert("Could not log in. Please try again.");
+        }
+    });
+}
+
+async function loadCurrentUser() {
+    try {
+        const response = await fetch("/api/me");
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const user = await response.json();
+        streakStartDate = user.streakStartDate || null;
+
+        updateStreak();
+
+        return user;
+
+    } catch (error) {
+        console.error("Could not load current user:", error);
+        return null;
+    }
+}
+
+async function updateWelcomeMessage() {
+    const user = await loadCurrentUser();
+
+    if (!user) {
+        return;
+    }
+
+    const welcomeMessage = document.getElementById("greeting");
+
+    if (!welcomeMessage) {
+        return;
+    }
+
+    const hour = new Date().getHours();
+
+    let greeting = "Good evening";
+
+    if (hour < 12) {
+        greeting = "Good morning";
+    } else if (hour < 18) {
+        greeting = "Good afternoon";
+    }
+
+    welcomeMessage.textContent = `${greeting}, ${user.name}!`;
+}
+
+/* Need to login */
+async function requireLogin() {
+    const publicPages = [
+        "login.html",
+        "signup.html"
+    ];
+
+    const currentPage = window.location.pathname.split("/").pop();
+
+    if (publicPages.includes(currentPage)) {
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/me");
+
+        if (!response.ok) {
+            window.location.href = "login.html";
+        }
+    } catch (error) {
+        console.error("Login check failed:", error);
+        window.location.href = "login.html";
+    }
+}
+
+async function updateAssignmentInAccount(assignment) {
+    try {
+        const response = await fetch(`/api/assignments/${assignment.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                completed: assignment.completed,
+                completedAt: assignment.completedAt
+            })
+        });
+
+        if (!response.ok) {
+            console.error("Could not update assignment in account.");
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Could not update assignment in account:", error);
+        return false;
+    }
+}
+
+async function updateStreakInAccount() {
+    try {
+        const response = await fetch("/api/streak", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                streakStartDate: streakStartDate
+            })
+        });
+
+        if (!response.ok) {
+            console.error("Could not update streak in account.");
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Could not update streak in account:", error);
+        return false;
+    }
+}
+
+async function updateSidebarProfile() {
+    const userNameElement = document.getElementById("sidebarUserName");
+    const userRoleElement = document.getElementById("sidebarUserRole");
+
+    if (!userNameElement || !userRoleElement) {
+        return;
+    }
+
+    const user = await loadCurrentUser();
+
+    if (!user) {
+        return;
+    }
+
+    userNameElement.textContent = user.name;
+    userRoleElement.textContent = user.schoolLevel || "College Student";
+}
+
+requireLogin();
+updateWelcomeMessage();
+updateSidebarProfile();
+
 // Call the function
 updateGlance();
 updateGentlePlan();
@@ -1461,5 +2245,3 @@ updateCurrentDate();
 updateGentlePlan();
 updateMyPlan();
 updateCalendar();
-
-//localStorage.clear();
