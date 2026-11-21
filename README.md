@@ -13,6 +13,7 @@ Give students one clear thing to focus on next.
   - [Assignment Management](#assignment-management)
   - [AI Assignment Analysis](#ai-assignment-analysis)
   - [Do This Next](#do-this-next)
+  - [Assignment Breakdown](#assignment-breakdown)
   - [Gentle Plan](#gentle-plan)
   - [Current Streak](#current-streak)
   - [User Accounts](#user-accounts)
@@ -30,6 +31,7 @@ Give students one clear thing to focus on next.
 - [Database Structure](#database-structure)
   - [Users](#users)
   - [Assignments](#assignments)
+  - [Assignment Steps](#assignment-steps)
   - [Password Change Requests](#password-change-requests)
 - [How Assignment Analysis Works](#how-assignment-analysis-works)
 - [Authentication Flow](#authentication-flow)
@@ -44,6 +46,7 @@ Give students one clear thing to focus on next.
   - [Authentication](#authentication-1)
   - [Profile](#profile)
   - [Assignments](#assignments-1)
+  - [Assignment Breakdown](#assignment-breakdown-1)
   - [AI Analysis](#ai-analysis)
   - [Password](#password)
   - [Account](#account)
@@ -51,7 +54,6 @@ Give students one clear thing to focus on next.
 - [Project Goals](#project-goals)
 - [Current Limitation](#current-limitation)
 - [Future Plans](#future-plans)
-  - [Assignment Breakdown](#assignment-breakdown)
   - [Smarter Planning](#smarter-planning)
   - [Calendar Integration](#calendar-integration)
   - [Deployment](#deployment)
@@ -102,6 +104,24 @@ The assignment shown is the unfinished assignment with the earliest due date tha
 If several assignments are due on the same day, the "Not now" button cycles through them. 
 The "Why this one?" box displays the AI's reason for the assignment's priority. 
 Instead of presenting another overwhelming list, Monotask provides a simple action, "Finish assignment." This keeps the interface focused on the student's immediate next step.
+### Assignment Breakdown
+Large assignments can be divided into smaller, actionable steps. On the "Do this next" card, click "Break it down" and the AI turns the assignment into a short, ordered checklist (3 to 8 steps) based on its title, course, due date, and description.
+
+Example for a research paper:
+- Choose a topic
+- Find sources
+- Create an outline
+- Write the introduction
+- Write the body paragraphs
+- Write the conclusion
+- Review and submit
+
+How it works:
+- Steps are saved with the assignment, so they are still there when the student comes back.
+- Students can check steps off one at a time. The first unfinished step is highlighted as "Start here," and a counter shows progress (for example, "3 of 7 done").
+- "Regenerate steps" replaces the list with a new one.
+- Finishing every step does not complete the assignment automatically. The student still clicks "Finish assignment."
+- Steps are based on the saved description. Uploaded files are not stored, so the breakdown cannot use their contents.
 ### Gentle Plan 
 Monotask also provides a weekly overview of upcoming work (Sunday through Saturday), with a progress ring showing how many of this week's assignments are completed.
 Assignments that are not immediately urgent can remain visible without competing with the student's current priority.
@@ -154,6 +174,7 @@ The verification email is only sent after the current password is verified.
 Users can permanently delete their account from their profile.
 Deleting an account also removes its associated:
 - Assignments
+- Assignment steps
 - Password change requests
 - User session
 The action requires confirmation before deletion.
@@ -224,6 +245,15 @@ The assignments table stores student assignments:
 - Completed
 - Completed-at
 Each assignment belongs to a specific user.
+### Assignment Steps
+The assignment steps table stores the checklist created by Assignment Breakdown:
+- ID
+- Assignment ID
+- User ID
+- Title
+- Position
+- Completed
+Each step belongs to one assignment and one user.
 ### Password Change Requests
 The password change requests table temporarily stores verification codes used during password changes.
 - ID
@@ -314,6 +344,9 @@ Some of the main backend endpoints include:
 - POST /api/assignments 
 - PUT /api/assignments/:id 
 - DELETE /api/assignments/:id
+### Assignment Breakdown
+- POST /api/assignments/:id/breakdown
+- PUT /api/steps/:id
 ### AI Analysis
 - POST /api/analyze-assignment
 ### Password
@@ -353,21 +386,12 @@ For example:
 - Only JPG and PNG images are supported.
 - Only one file can be uploaded per assignment.
 - AI-generated study plans are still being expanded.
+- Assignment steps cannot be edited, added, or reordered yet. They can only be checked off or regenerated.
+- Assignment Breakdown only appears on the "Do this next" card, and it does not use the contents of uploaded files.
 - Deployment infrastructure has not yet been finalized.
 - Production security and scalability still need additional work.
 The current application is primarily intended as a development and portfolio project.
 # Future Plans
-### Assignment Breakdown
-Large assignments could eventually be divided into smaller actionable steps.
-For example:
-- Research paper:
-    - Choose topic
-    - Find sources
-    - Create outline
-    - Write introduction
-    - Write body paragraphs
-    - Write conclusion
-    - Review and submit
 ### Smarter Planning
 Future versions may consider:
 - Multiple upcoming deadlines
@@ -379,7 +403,7 @@ Future versions may consider:
 - Existing commitments
 to create a more personalized plan.
 ### Calendar Integration
-Monotask already includes a calendar of assignment deadlines. A future version coulld allow students to visualize:
+Monotask already includes a calendar of assignment deadlines. A future version could allow students to visualize:
 - Planned work
 - Upcoming exams
 - Study sessions

@@ -130,9 +130,25 @@
                   </div>
                 </div>
 
+                <!-- Assignment Breakdown -->
+                <div class="step-breakdown" id="stepBreakdown" hidden>
+                  <div class="step-breakdown-header">
+                    <h4>Steps</h4>
+                    <span class="step-progress" id="stepProgressText"></span>
+                  </div>
+
+                  <ul class="step-list" id="stepList"></ul>
+
+                  <button type="button" class="step-regenerate" id="regenerateSteps">Regenerate steps</button>
+                </div>
+
+                <p class="step-error" id="stepError" hidden></p>
+
                 <div class="task-actions">
                   <!-- Finish assignment -->
                   <button type="button" class="primary-button" id="finishNextTask">Finish assignment</button>
+                  <!-- Break the assignment into smaller steps -->
+                  <button type="button" class="secondary-button" id="breakDownTask">Break it down</button>
                   <!-- Skip this task for now to go to the next task -->
                   <button type="button" class="secondary-button" id="skipNextTask">Not now</button>
                 </div>
