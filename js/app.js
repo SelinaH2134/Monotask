@@ -30,6 +30,14 @@ const sessionsPlanned = document.getElementById("sessionsPlanned");
 // Task Description and Button
 const finishNextTask = document.getElementById("finishNextTask");
 const skipNextTask = document.getElementById("skipNextTask");
+
+// Assignment breakdown
+const breakDownTask = document.getElementById("breakDownTask");
+const stepBreakdown = document.getElementById("stepBreakdown");
+const stepList = document.getElementById("stepList");
+const stepProgressText = document.getElementById("stepProgressText");
+const regenerateSteps = document.getElementById("regenerateSteps");
+const stepError = document.getElementById("stepError");
 const nextTaskTitle = document.getElementById("nextTaskTitle");
 const nextTaskCourse = document.getElementById("nextTaskCourse");
 const nextTaskDue = document.getElementById("nextTaskDue");
@@ -1254,6 +1262,9 @@ function updateNextTask() {
         finishNextTask.style.display = "none";
         skipNextTask.style.display = "none";
 
+        // Hide the assignment breakdown
+        renderNextTaskSteps(null);
+
         return;
     }
 
@@ -1342,6 +1353,159 @@ function updateNextTask() {
     else {
         whyTaskText.textContent = "Analyzing this assignment...";
     }
+
+    renderNextTaskSteps(nextTask);
+}
+
+/* Assignment Breakdown */
+function showStepError(message) {
+    if (!stepError) {
+        return;
+    }
+
+    stepError.textContent = message || "";
+    stepError.hidden = !message;
+}
+
+function renderNextTaskSteps(assignment) {
+    if (!stepBreakdown || !stepList || !breakDownTask) {
+        return;
+    }
+
+    showStepError("");
+
+    if (!assignment) {
+        stepBreakdown.hidden = true;
+        breakDownTask.style.display = "none";
+        return;
+    }
+
+    const steps = assignment.steps || [];
+
+    if (steps.length === 0) {
+        stepBreakdown.hidden = true;
+        stepList.innerHTML = "";
+        breakDownTask.style.display = "";
+        return;
+    }
+
+    breakDownTask.style.display = "none";
+    stepBreakdown.hidden = false;
+    stepList.innerHTML = "";
+
+    const firstUnfinished = steps.find(function (step) {
+        return !step.completed;
+    });
+
+    steps.forEach(function (step) {
+        const item = document.createElement("li");
+        item.classList.add("step-item");
+
+        if (step.completed) {
+            item.classList.add("completed");
+        }
+
+        if (firstUnfinished && step.id === firstUnfinished.id) {
+            item.classList.add("current");
+        }
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = "step-" + step.id;
+        checkbox.checked = step.completed;
+
+        const label = document.createElement("label");
+        label.htmlFor = checkbox.id;
+        label.textContent = step.title;
+
+        checkbox.addEventListener("change", async function () {
+            const previousValue = step.completed;
+
+            step.completed = checkbox.checked;
+
+            const saved = await updateStepInAccount(step);
+
+            if (!saved) {
+                step.completed = previousValue;
+                showStepError("Could not save that step. Please try again.");
+            }
+
+            renderNextTaskSteps(assignment);
+        });
+
+        item.appendChild(checkbox);
+        item.appendChild(label);
+        stepList.appendChild(item);
+    });
+
+    const doneCount = steps.filter(function (step) {
+        return step.completed;
+    }).length;
+
+    stepProgressText.textContent = doneCount === steps.length
+        ? "All steps done. Ready to finish?"
+        : `${doneCount} of ${steps.length} done`;
+}
+
+async function requestBreakdown(assignment, regenerate) {
+    showStepError("");
+
+    breakDownTask.disabled = true;
+    regenerateSteps.disabled = true;
+
+    const originalLabel = breakDownTask.textContent;
+    breakDownTask.textContent = "Breaking it down...";
+
+    try {
+        const response = await fetch(`/api/assignments/${assignment.id}/breakdown`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                regenerate: Boolean(regenerate)
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            showStepError(result.message || "Could not break down this assignment.");
+            return;
+        }
+
+        assignment.steps = result.steps;
+
+    } catch (error) {
+        console.error("Assignment breakdown failed:", error);
+        showStepError("Could not break down this assignment.");
+
+    } finally {
+        breakDownTask.disabled = false;
+        regenerateSteps.disabled = false;
+        breakDownTask.textContent = originalLabel;
+        renderNextTaskSteps(assignment);
+    }
+}
+
+if (breakDownTask) {
+    breakDownTask.addEventListener("click", function () {
+        const nextTask = nextTaskQueue[0];
+
+        if (nextTask) {
+            requestBreakdown(nextTask, false);
+        }
+    });
+}
+
+if (regenerateSteps) {
+    regenerateSteps.addEventListener("click", function () {
+        const nextTask = nextTaskQueue[0];
+
+        if (nextTask) {
+            requestBreakdown(nextTask, true);
+        }
+    });
 }
 
 /* Update Daily Progress Function */
@@ -2183,6 +2347,25 @@ async function updateAssignmentInAccount(assignment) {
         return true;
     } catch (error) {
         console.error("Could not update assignment in account:", error);
+        return false;
+    }
+}
+
+async function updateStepInAccount(step) {
+    try {
+        const response = await fetch(`/api/steps/${step.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                completed: step.completed
+            })
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error("Could not update step in account:", error);
         return false;
     }
 }

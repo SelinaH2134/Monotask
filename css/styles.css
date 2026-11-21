@@ -729,6 +729,7 @@ a {
 /* Task Buttons */
 .task-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
@@ -764,6 +765,107 @@ a {
 .secondary-button:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+/* Assignment Breakdown */
+.step-breakdown {
+    padding: 13px 15px;
+    background-color: #F8FAFC;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.step-breakdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.step-breakdown-header h4 {
+    color: var(--prussian-blue);
+    font-size: 0.75rem;
+}
+
+.step-progress {
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+.step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 0.76rem;
+}
+
+.step-item input[type="checkbox"] {
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.step-item label {
+    flex: 1;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+.step-item.current {
+    background-color: #E0F2FE;
+    font-weight: 600;
+}
+
+.step-item.current label::after {
+    content: "Start here";
+    margin-left: 8px;
+    color: #0284C7;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.step-item.completed label {
+    color: var(--light-text);
+    text-decoration: line-through;
+}
+
+.step-regenerate {
+    margin-top: 8px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.step-regenerate:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.step-error {
+    margin-bottom: 12px;
+    color: var(--red-pink);
+    font-size: 0.72rem;
 }
 
 /* View full assignment */
